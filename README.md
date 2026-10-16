@@ -38,11 +38,11 @@ Runs against the real SAP receivables dataset (`datasets/receivables/dataset.csv
 
 ## Charts
 
-![Reconciliation gap](assets/chart_01.png)
-![Monthly open balance](assets/chart_02.png)
-![Payment timeliness](assets/chart_03.png)
-![Term x overdue](assets/chart_04.png)
-![Business unit x open](assets/chart_05.png)
+![Reconciliation gap](assets/chart_EN_01.png)
+![Monthly open balance](assets/chart_EN_02.png)
+![Payment timeliness](assets/chart_EN_03.png)
+![Term x overdue](assets/chart_EN_04.png)
+![Business unit x open](assets/chart_EN_05.png)
 
 > Full interactive report: `报告/应收对账分析报告.html` — GitHub doesn't render HTML; open locally after cloning.
 
