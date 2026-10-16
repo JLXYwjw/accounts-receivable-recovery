@@ -36,6 +36,12 @@ Runs against the real SAP receivables dataset (`datasets/receivables/dataset.csv
   line-level invoice↔PO↔payment matching needs bank statements, listed as next
   step — not claimed as done.
 
+## Report preview
+
+![Report preview](assets/report-preview.jpg)
+
+> Full interactive report: `报告/应收对账分析报告.html` — GitHub doesn't render HTML; open locally after cloning.
+
 ## Layout
 
 ```
