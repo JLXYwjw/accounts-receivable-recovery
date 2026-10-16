@@ -4,20 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>应收账款回收分析：未结清缺口与催收优先级</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%230ea5e9'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23f59e0b'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%2314b8a6'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23ea580c'/%3E%3C/svg%3E">
 <style>
-  :root{--navy:#0284c7;--blue:#0ea5e9;--accent:#f59e0b;--accent-soft:#fffbeb;--ink:#0f172a;--muted:#64748b;--line:#e0f2fe;--bg:#f0f9ff;--card:#fff;--green:#10b981}
+  :root{--navy:#0f766e;--blue:#14b8a6;--accent:#ea580c;--accent-soft:#fffbeb;--ink:#0f172a;--muted:#64748b;--line:#d7f0ea;--bg:#ecfdf5;--card:#fff;--green:#10b981}
   *{box-sizing:border-box}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.7}
   .wrap{max-width:1080px;margin:0 auto;padding:0 24px 80px}
-  header.hero{background:linear-gradient(135deg,#0369a1,#38bdf8);color:#fff;padding:56px 24px 44px;margin-bottom:8px}
+  header.hero{background:linear-gradient(135deg,#134e4a,#0d9488);color:#fff;padding:56px 24px 44px;margin-bottom:8px}
   header.hero h1{margin:0 0 12px;font-size:30px;line-height:1.25}
   header.hero .sub{opacity:.94;font-size:16px;max-width:900px}
   header.hero .meta{margin-top:18px;font-size:13px;opacity:.85}
   nav.tabs{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:5;padding:10px 24px}
   nav.tabs .wrap{padding:0;display:flex;gap:6px;flex-wrap:wrap;max-width:1080px}
   nav.tabs a{color:var(--blue);text-decoration:none;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px}
-  nav.tabs a:hover{background:#e0f2fe}
+  nav.tabs a:hover{background:#d7f0ea}
   section{padding:36px 0;border-bottom:1px solid var(--line)}
   h2{font-size:22px;margin:0 0 8px}
   h2 .n{color:var(--blue)}
@@ -27,13 +27,13 @@
   .muted{color:var(--muted)}
   .grid{display:grid;gap:16px}
   .cards{grid-template-columns:repeat(3,1fr);margin:18px 0}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(2,132,199,.06)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(15,118,110,.08)}
   .card .num{font-size:26px;font-weight:800;color:var(--navy)}
   .card .lbl{font-size:13px;color:var(--muted)}
   table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0;background:#fff;table-layout:fixed}
   th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;overflow-wrap:break-word}
-  th{background:#f0f9ff;font-weight:700;color:var(--navy)}
-  .fig{margin:22px 0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 16px;box-shadow:0 1px 3px rgba(2,132,199,.06)}
+  th{background:#ecfdf5;font-weight:700;color:var(--navy)}
+  .fig{margin:22px 0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 16px;box-shadow:0 1px 3px rgba(15,118,110,.08)}
   .fig h4{font-size:15px;margin:0 0 4px}
   .fig .cap{font-size:12px;color:var(--muted);margin:0 0 12px}
   .fig .why{display:flex;gap:12px;margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
@@ -41,8 +41,8 @@
   .fig .why .tag.so{color:var(--blue)}
   .fig .why .tag.rec{color:var(--accent)}
   .fig .why p{margin:0;font-size:13.5px}
-  .pill{display:inline-block;background:#e0f2fe;color:var(--navy);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600;margin-right:6px}
-  .callout{background:var(--accent-soft);border:1px solid #fde68a;border-left:4px solid var(--accent);padding:12px 16px;border-radius:8px;margin:14px 0;font-size:14px}
+  .pill{display:inline-block;background:#d7f0ea;color:var(--navy);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600;margin-right:6px}
+  .callout{background:var(--accent-soft);border:1px solid #fed7aa;border-left:4px solid var(--accent);padding:12px 16px;border-radius:8px;margin:14px 0;font-size:14px}
   .two{grid-template-columns:1fr 1fr}
   @media(max-width:720px){.two{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:520px){.bar{flex-wrap:wrap}.bar .bl{flex:0 0 100%;text-align:left;font-size:12px}.bar .bv{flex:0 0 96px;font-size:11px}.bar .track{min-width:40px}}
@@ -55,12 +55,12 @@
   .bar .fill{height:100%;border-radius:6px}
   .bar .bv{flex:0 0 110px;color:var(--muted);font-size:12px}
   .donut{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
-  .donut .ring{--p:0;width:150px;height:150px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p)*1%),#bae6fd 0);display:flex;align-items:center;justify-content:center}
+  .donut .ring{--p:0;width:150px;height:150px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p)*1%),#99f6e4 0);display:flex;align-items:center;justify-content:center}
   .donut .ring .hole{width:96px;height:96px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:12px;color:var(--muted)}
   .donut .ring .hole b{font-size:20px;color:var(--navy)}
   .cols{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-top:8px}
   .cols .col{flex:1;min-width:90px;text-align:center}
-  .cols .col .ht{background:#0ea5e9;border-radius:8px 8px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;color:#fff;font-weight:700}
+  .cols .col .ht{background:#14b8a6;border-radius:8px 8px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;color:#fff;font-weight:700}
   .cols .col .lb{font-size:12px;margin-top:6px;color:var(--muted)}
   .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:10px 0 2px}
   .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
@@ -70,7 +70,7 @@
 
 <header class="hero">
   <div class="wrap">
-    <div class="kicker" style="color:#e0f2fe">数据分析项目 · 应收账款回收（对账·追收）</div>
+    <div class="kicker" style="color:#d7f0ea">数据分析项目 · 应收账款回收（对账·追收）</div>
     <h1>应收账款回收分析：未结清缺口与催收优先级</h1>
     <p class="sub">一份 5 万行真实 SAP 应收发票的分析：找出"应收到 vs 实收到"的对账缺口（$334M 未结清），用机器学习给每张发票排催收优先级，把催收资源投到最可能收回的发票上。</p>
     <div class="meta">数据来源：真实 SAP 应收账款（2018–2020）· 50,000 行 / 48,833 张发票 · 总应收 $16.2 亿</div>
@@ -140,8 +140,8 @@
         <div class="hole"><b>20%</b>未结清</div>
       </div>
       <div style="flex:1;min-width:200px">
-        <div class="bar"><div class="bl">已结清</div><div class="track"><div class="fill" style="width:80%;background:#0ea5e9"></div></div><div class="bv">40,000 · 80%</div></div>
-        <div class="bar"><div class="bl">未结清</div><div class="track"><div class="fill" style="width:20%;background:#f59e0b"></div></div><div class="bv">10,000 · $334M</div></div>
+        <div class="bar"><div class="bl">已结清</div><div class="track"><div class="fill" style="width:80%;background:#14b8a6"></div></div><div class="bv">40,000 · 80%</div></div>
+        <div class="bar"><div class="bl">未结清</div><div class="track"><div class="fill" style="width:20%;background:#ea580c"></div></div><div class="bv">10,000 · $334M</div></div>
       </div>
     </div>
     <div class="why">
@@ -158,11 +158,11 @@
     <h4>月度未结清金额 —— 集中在近 4 个月（快照特性，非历史坏账）</h4>
     <p class="cap">按过账月：2019 全年发票几乎全部已结清；未结清集中在 2020-02～2020-05 过账（尚未完成结算周期）</p>
     <div class="cols">
-      <div class="col"><div class="ht" style="height:6px;background:#bae6fd;font-size:0">.0</div><div class="lb">2019 各月</div></div>
-      <div class="col"><div class="ht" style="height:12px;background:#f59e0b">$11M</div><div class="lb">2020-02</div></div>
-      <div class="col"><div class="ht" style="height:150px;background:#f59e0b">$165M</div><div class="lb">2020-03</div></div>
-      <div class="col"><div class="ht" style="height:115px;background:#f59e0b">$126M</div><div class="lb">2020-04</div></div>
-      <div class="col"><div class="ht" style="height:32px;background:#f59e0b">$33M</div><div class="lb">2020-05</div></div>
+      <div class="col"><div class="ht" style="height:6px;background:#99f6e4;font-size:0">.0</div><div class="lb">2019 各月</div></div>
+      <div class="col"><div class="ht" style="height:12px;background:#ea580c">$11M</div><div class="lb">2020-02</div></div>
+      <div class="col"><div class="ht" style="height:150px;background:#ea580c">$165M</div><div class="lb">2020-03</div></div>
+      <div class="col"><div class="ht" style="height:115px;background:#ea580c">$126M</div><div class="lb">2020-04</div></div>
+      <div class="col"><div class="ht" style="height:32px;background:#ea580c">$33M</div><div class="lb">2020-05</div></div>
     </div>
     <p class="muted" style="font-size:12px;margin-top:6px">未结清金额 $334M ≈ $11M+$165M+$126M+$33M（近 4 个月）；历史月份已结清（open≈0）。</p>
     <div class="why">
@@ -178,9 +178,9 @@
   <div class="fig">
     <h4>收款时效 —— 平均账期 17.1 天，但已结清中 41.9% 逾期</h4>
     <p class="cap">已结清发票的平均"过账→结清"= DSO 18.1 天；其中 41.9%（金额 $571.7M）付款晚于到期日</p>
-    <div class="bar"><div class="bl">平均账期（过账→到期）</div><div class="track"><div class="fill" style="width:47%;background:#0ea5e9"></div></div><div class="bv">17.1 天</div></div>
-    <div class="bar"><div class="bl">DSO（过账→结清）</div><div class="track"><div class="fill" style="width:50%;background:#0ea5e9"></div></div><div class="bv">18.1 天</div></div>
-    <div class="bar"><div class="bl">已结清中逾期付款</div><div class="track"><div class="fill" style="width:42%;background:#f59e0b"></div></div><div class="bv">41.9% · $571.7M</div></div>
+    <div class="bar"><div class="bl">平均账期（过账→到期）</div><div class="track"><div class="fill" style="width:47%;background:#14b8a6"></div></div><div class="bv">17.1 天</div></div>
+    <div class="bar"><div class="bl">DSO（过账→结清）</div><div class="track"><div class="fill" style="width:50%;background:#14b8a6"></div></div><div class="bv">18.1 天</div></div>
+    <div class="bar"><div class="bl">已结清中逾期付款</div><div class="track"><div class="fill" style="width:42%;background:#ea580c"></div></div><div class="bv">41.9% · $571.7M</div></div>
     <div class="why">
       <div class="tag so">洞察</div>
       <p>平均 DSO 只有 18.1 天，但<strong>已结清的发票里仍有 41.9% 是逾期付款</strong>（$571.7M）——这是"该到期却没按时到账"的真实时间差，直接影响现金流。</p>
@@ -194,11 +194,11 @@
   <div class="fig">
     <h4>付款条款 × 逾期 —— NAX2 几乎必然逾期（99.8%），且拖 42.6 天</h4>
     <p class="cap">已结清发票按付款条款统计（样本 ≥ 50）；NAX2 是首要谈判对象</p>
-    <div class="bar"><div class="bl">NAX2</div><div class="track"><div class="fill" style="width:99.8%;background:#f59e0b"></div></div><div class="bv">99.8% 逾期 · 42.6天</div></div>
-    <div class="bar"><div class="bl">NAM1</div><div class="track"><div class="fill" style="width:86.2%;background:#f59e0b"></div></div><div class="bv">86.2% · 2.2天</div></div>
-    <div class="bar"><div class="bl">CA10</div><div class="track"><div class="fill" style="width:75.4%;background:#f59e0b"></div></div><div class="bv">75.4% · 6.9天（3,075单）</div></div>
-    <div class="bar"><div class="bl">NAG2</div><div class="track"><div class="fill" style="width:71.5%;background:#f59e0b"></div></div><div class="bv">71.5% · 8.0天</div></div>
-    <div class="bar"><div class="bl">NAVF</div><div class="track"><div class="fill" style="width:71.4%;background:#f59e0b"></div></div><div class="bv">71.4% · 21.4天</div></div>
+    <div class="bar"><div class="bl">NAX2</div><div class="track"><div class="fill" style="width:99.8%;background:#ea580c"></div></div><div class="bv">99.8% 逾期 · 42.6天</div></div>
+    <div class="bar"><div class="bl">NAM1</div><div class="track"><div class="fill" style="width:86.2%;background:#ea580c"></div></div><div class="bv">86.2% · 2.2天</div></div>
+    <div class="bar"><div class="bl">CA10</div><div class="track"><div class="fill" style="width:75.4%;background:#ea580c"></div></div><div class="bv">75.4% · 6.9天（3,075单）</div></div>
+    <div class="bar"><div class="bl">NAG2</div><div class="track"><div class="fill" style="width:71.5%;background:#ea580c"></div></div><div class="bv">71.5% · 8.0天</div></div>
+    <div class="bar"><div class="bl">NAVF</div><div class="track"><div class="fill" style="width:71.4%;background:#ea580c"></div></div><div class="bv">71.4% · 21.4天</div></div>
     <div class="why">
       <div class="tag so">洞察</div>
       <p>付款条款决定逾期行为：<strong>NAX2 的 548 单里 99.8% 逾期、平均拖 42.6 天</strong>；CA10 量最大（3,075 单）也有 75% 逾期。条款是逾期问题的<strong>结构性根因</strong>，不是偶发。</p>
@@ -212,10 +212,10 @@
   <div class="fig">
     <h4>业务单元 × 未结清 —— U001 体量最大，U013 率最低</h4>
     <p class="cap">各业务单元的未结清金额与未结清率（金额=金条，率=旁标）</p>
-    <div class="bar"><div class="bl">U001</div><div class="track"><div class="fill" style="width:86%;background:#0284c7"></div></div><div class="bv">$287.8M · 20.2%</div></div>
-    <div class="bar"><div class="bl">CA02</div><div class="track"><div class="fill" style="width:13%;background:#0ea5e9"></div></div><div class="bv">$44.3M · 18.8%</div></div>
-    <div class="bar"><div class="bl">U013</div><div class="track"><div class="fill" style="width:0.4%;background:#0ea5e9"></div></div><div class="bv">$1.3M · 12.6%</div></div>
-    <div class="bar"><div class="bl">U002</div><div class="track"><div class="fill" style="width:0.3%;background:#0ea5e9"></div></div><div class="bv">$0.9M · 14.1%</div></div>
+    <div class="bar"><div class="bl">U001</div><div class="track"><div class="fill" style="width:86%;background:#0f766e"></div></div><div class="bv">$287.8M · 20.2%</div></div>
+    <div class="bar"><div class="bl">CA02</div><div class="track"><div class="fill" style="width:13%;background:#14b8a6"></div></div><div class="bv">$44.3M · 18.8%</div></div>
+    <div class="bar"><div class="bl">U013</div><div class="track"><div class="fill" style="width:0.4%;background:#14b8a6"></div></div><div class="bv">$1.3M · 12.6%</div></div>
+    <div class="bar"><div class="bl">U002</div><div class="track"><div class="fill" style="width:0.3%;background:#14b8a6"></div></div><div class="bv">$0.9M · 14.1%</div></div>
     <div class="why">
       <div class="tag so">洞察</div>
       <p><strong>U001 一个业务单元占未结清金额的 86%</strong>（$287.8M），未结清率 20.2%；U013 未结清率最低（12.6%）。催收资源应优先投入 U001。</p>
@@ -245,9 +245,9 @@
   <p class="muted">树模型显著优于线性基线；GBM 测试 AUC 0.912 最高，选为主模型。</p>
 
   <h3>4.2 诚实解读：模型学到的核心信号</h3>
-  <div class="bar"><div class="bl">posting_month（过账月份）</div><div class="track"><div class="fill" style="width:92%;background:#0284c7"></div></div><div class="bv">0.920</div></div>
-  <div class="bar"><div class="bl">amount_log（金额对数）</div><div class="track"><div class="fill" style="width:3.8%;background:#0ea5e9"></div></div><div class="bv">0.038</div></div>
-  <div class="bar"><div class="bl">days_to_due（账期天数）</div><div class="track"><div class="fill" style="width:2.8%;background:#0ea5e9"></div></div><div class="bv">0.028</div></div>
+  <div class="bar"><div class="bl">posting_month（过账月份）</div><div class="track"><div class="fill" style="width:92%;background:#0f766e"></div></div><div class="bv">0.920</div></div>
+  <div class="bar"><div class="bl">amount_log（金额对数）</div><div class="track"><div class="fill" style="width:3.8%;background:#14b8a6"></div></div><div class="bv">0.038</div></div>
+  <div class="bar"><div class="bl">days_to_due（账期天数）</div><div class="track"><div class="fill" style="width:2.8%;background:#14b8a6"></div></div><div class="bv">0.028</div></div>
   <p class="muted">特征重要性（GBM）：posting_month 主导（0.92），即"未结清"主要由过账时间决定（近月发票未到结算期）。这是快照数据的真实特性，不是模型缺陷。</p>
   <div class="callout"><strong>这为什么重要（诚实）。</strong> AUC 0.912 高，但<strong>约 92% 的信号来自"过账月份"</strong>——因为 <code>isOpen</code> 是 2020-05 导出的快照标签：近月过账的发票才可能未结清，历史发票已结清。所以模型<strong>能复现"这张发票是否近月过账且未结清"</strong>，但<strong>不能预测长期坏账</strong>。它的可操作价值仅限于：在<strong>已到期未结清</strong>的 $322.9M 里用"金额×概率"排出催收先后——这是把快照信息转成优先级排序，不是因果预测。</div>
 
