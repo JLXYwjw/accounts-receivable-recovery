@@ -1,0 +1,7 @@
+# 源数据（在仓库外 datasets/，不复制进来）
+data/raw/
+# 派生输出（指标/ML JSON 保留为证据，parquet 由脚本生成）
+__pycache__/
+.pytest_cache/
+报告/_shots/
+*.pyc
