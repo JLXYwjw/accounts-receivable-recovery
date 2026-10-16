@@ -44,7 +44,7 @@ Runs against the real SAP receivables dataset (`datasets/receivables/dataset.csv
 ![Term x overdue](assets/chart_EN_04.png)
 ![Business unit x open](assets/chart_EN_05.png)
 
-> Full interactive report: `报告/应收对账分析报告.html` — GitHub doesn't render HTML; open locally after cloning.
+> Full interactive report: open `index.html` (English) or `index.zh-CN.html` (Chinese) after cloning — GitHub doesn't render HTML.
 
 ## Layout
 
@@ -56,8 +56,8 @@ scripts/
 tests/
   test_cleaning.py     # shape, date validity, isOpen⇔clear_date consistency
   test_report_numbers.py  # recompute metrics from parquet, assert HTML matches
-报告/
-  应收对账分析报告.html   # Chinese report, every chart has Insight + Action
+index.html        # English interactive report
+index.zh-CN.html  # Chinese report, every chart has Insight + Action
 ```
 
 ## Run it
