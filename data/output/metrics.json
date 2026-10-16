@@ -1,0 +1,269 @@
+{
+  "total_rows": 50000,
+  "total_invoices": 48833,
+  "total_amount": 1616851082.56,
+  "open_count": 10000,
+  "open_rate_pct": 20.0,
+  "open_amount": 334249686.82,
+  "paid_dso_days": 18.1,
+  "paid_overdue_rate_pct": 41.9,
+  "paid_overdue_amount": 571720594.44,
+  "avg_days_to_due": 17.1,
+  "by_business": [
+    {
+      "business_code": "CA02",
+      "rows": 3917.0,
+      "open_rate_pct": 18.8,
+      "open_amount": 44295603.12
+    },
+    {
+      "business_code": "U001",
+      "rows": 45359.0,
+      "open_rate_pct": 20.2,
+      "open_amount": 287753205.17
+    },
+    {
+      "business_code": "U002",
+      "rows": 135.0,
+      "open_rate_pct": 14.1,
+      "open_amount": 933057.77
+    },
+    {
+      "business_code": "U005",
+      "rows": 11.0,
+      "open_rate_pct": 18.2,
+      "open_amount": 14224.56
+    },
+    {
+      "business_code": "U007",
+      "rows": 5.0,
+      "open_rate_pct": 20.0,
+      "open_amount": 1715.04
+    },
+    {
+      "business_code": "U013",
+      "rows": 573.0,
+      "open_rate_pct": 12.6,
+      "open_amount": 1251881.16
+    }
+  ],
+  "by_currency": [
+    {
+      "invoice_currency": "CAD",
+      "open_rate_pct": 18.8,
+      "open_amount": 44295603.12
+    },
+    {
+      "invoice_currency": "USD",
+      "open_rate_pct": 20.1,
+      "open_amount": 289954083.7
+    }
+  ],
+  "top_overdue_terms": [
+    {
+      "cust_payment_terms": "NAX2",
+      "count": 548.0,
+      "overdue_pct": 99.8,
+      "avg_overdue_days": 42.6
+    },
+    {
+      "cust_payment_terms": "NAM1",
+      "count": 225.0,
+      "overdue_pct": 86.2,
+      "avg_overdue_days": 2.2
+    },
+    {
+      "cust_payment_terms": "CA10",
+      "count": 3075.0,
+      "overdue_pct": 75.4,
+      "avg_overdue_days": 6.9
+    },
+    {
+      "cust_payment_terms": "NAG2",
+      "count": 723.0,
+      "overdue_pct": 71.5,
+      "avg_overdue_days": 8.0
+    },
+    {
+      "cust_payment_terms": "NAVF",
+      "count": 199.0,
+      "overdue_pct": 71.4,
+      "avg_overdue_days": 21.4
+    },
+    {
+      "cust_payment_terms": "NA10",
+      "count": 372.0,
+      "overdue_pct": 68.8,
+      "avg_overdue_days": 5.1
+    },
+    {
+      "cust_payment_terms": "NAVQ",
+      "count": 95.0,
+      "overdue_pct": 63.2,
+      "avg_overdue_days": 8.5
+    },
+    {
+      "cust_payment_terms": "NAU5",
+      "count": 701.0,
+      "overdue_pct": 62.9,
+      "avg_overdue_days": 2.0
+    },
+    {
+      "cust_payment_terms": "NAD5",
+      "count": 279.0,
+      "overdue_pct": 62.7,
+      "avg_overdue_days": 9.3
+    },
+    {
+      "cust_payment_terms": "NAWN",
+      "count": 97.0,
+      "overdue_pct": 50.5,
+      "avg_overdue_days": 4.8
+    }
+  ],
+  "overdue_terms_sample_size": "min_count=50",
+  "monthly": [
+    {
+      "posting_month": "2018-12",
+      "open_amount": 0.0,
+      "total_amount": 3103459.32
+    },
+    {
+      "posting_month": "2019-01",
+      "open_amount": 0.0,
+      "total_amount": 85793054.76
+    },
+    {
+      "posting_month": "2019-02",
+      "open_amount": 0.0,
+      "total_amount": 84637848.28
+    },
+    {
+      "posting_month": "2019-03",
+      "open_amount": 0.0,
+      "total_amount": 99383691.8
+    },
+    {
+      "posting_month": "2019-04",
+      "open_amount": 0.0,
+      "total_amount": 98271133.83
+    },
+    {
+      "posting_month": "2019-05",
+      "open_amount": 0.0,
+      "total_amount": 97731393.01
+    },
+    {
+      "posting_month": "2019-06",
+      "open_amount": 0.0,
+      "total_amount": 97970815.81
+    },
+    {
+      "posting_month": "2019-07",
+      "open_amount": 0.0,
+      "total_amount": 89824539.34
+    },
+    {
+      "posting_month": "2019-08",
+      "open_amount": 0.0,
+      "total_amount": 103994193.29
+    },
+    {
+      "posting_month": "2019-09",
+      "open_amount": 0.0,
+      "total_amount": 94836645.39
+    },
+    {
+      "posting_month": "2019-10",
+      "open_amount": 0.0,
+      "total_amount": 104124103.76
+    },
+    {
+      "posting_month": "2019-11",
+      "open_amount": 0.0,
+      "total_amount": 103166322.9
+    },
+    {
+      "posting_month": "2019-12",
+      "open_amount": 0.0,
+      "total_amount": 63753584.52
+    },
+    {
+      "posting_month": "2020-01",
+      "open_amount": 0.0,
+      "total_amount": 84279884.61
+    },
+    {
+      "posting_month": "2020-02",
+      "open_amount": 11048392.31,
+      "total_amount": 82779117.43
+    },
+    {
+      "posting_month": "2020-03",
+      "open_amount": 164670885.81,
+      "total_amount": 164670885.81
+    },
+    {
+      "posting_month": "2020-04",
+      "open_amount": 125874625.23,
+      "total_amount": 125874625.23
+    },
+    {
+      "posting_month": "2020-05",
+      "open_amount": 32655783.47,
+      "total_amount": 32655783.47
+    }
+  ],
+  "top_open_customers": [
+    {
+      "name_customer": "WAL-MAR systems",
+      "amount": 6287869.58,
+      "n_invoices": 266
+    },
+    {
+      "name_customer": "WAL-MAR in",
+      "amount": 5749888.6,
+      "n_invoices": 249
+    },
+    {
+      "name_customer": "WAL-MAR associates",
+      "amount": 5717393.68,
+      "n_invoices": 250
+    },
+    {
+      "name_customer": "WAL-MAR llc",
+      "amount": 5660865.13,
+      "n_invoices": 250
+    },
+    {
+      "name_customer": "WAL-MAR us",
+      "amount": 5430094.7,
+      "n_invoices": 228
+    },
+    {
+      "name_customer": "WAL-MAR co",
+      "amount": 5401544.24,
+      "n_invoices": 262
+    },
+    {
+      "name_customer": "WAL-MAR corp",
+      "amount": 5326825.03,
+      "n_invoices": 254
+    },
+    {
+      "name_customer": "WAL-MAR foundation",
+      "amount": 5259306.65,
+      "n_invoices": 241
+    },
+    {
+      "name_customer": "WAL-MAR corporation",
+      "amount": 5116841.02,
+      "n_invoices": 213
+    },
+    {
+      "name_customer": "WAL-MAR trust",
+      "amount": 4871444.35,
+      "n_invoices": 243
+    }
+  ]
+}

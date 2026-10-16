@@ -1,0 +1,18 @@
+{
+  "input_rows": 50000,
+  "input_cols": 19,
+  "dropped_empty_cols": [
+    "area_business"
+  ],
+  "posting_date_invalid": 0,
+  "duplicate_doc_id_rows": 1161,
+  "train_rows": 40000,
+  "val_rows": 10000,
+  "isOpen_clear_consistent_rows": 50000,
+  "isOpen_dist": {
+    "0": 40000,
+    "1": 10000
+  },
+  "output_rows": 50000,
+  "output_cols": 23
+}
