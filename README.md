@@ -68,4 +68,24 @@ pytest tests/ -q
 - Models (holdout): logistic AUC 0.669 / RF 0.908 / **GBM 0.912**
 - Holdout past-due pool 2,000 / $68.1M; collections queue top-50 ≈ $8.0M
 
+## Data source
+
+The raw file lives in `data/raw/` (excluded from git — after cloning, download it yourself).
+
+| File | What it is | Kaggle download |
+|---|---|---|
+| `dataset.csv` | Real SAP accounts-receivable snapshot (50,000 invoice lines, 2018–2020) | `kaggle datasets download -d mustafakeser4/sap-dataset-bigquery-dataset -p data/raw --unzip` |
+
+Kaggle pages (closest public AR / payment-term sources):
+- https://www.kaggle.com/datasets/mustafakeser4/sap-dataset-bigquery-dataset (SAP enterprise finance/procurement)
+- https://www.kaggle.com/datasets/hhenry/finance-factoring-ibm-late-payment-histories (AR / payment-term, same shape)
+
+Honest note: this repo uses a real SAP AR extract; the Kaggle links are the closest reproducible public sources with the same AR/term structure.
+
+```bash
+pip install kaggle
+kaggle datasets download -d mustafakeser4/sap-dataset-bigquery-dataset -p data/raw --unzip
+# requires a kaggle.json / KAGGLE_USERNAME + KAGGLE_KEY
+```
+
 — Jiawei Wang
