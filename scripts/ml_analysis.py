@@ -65,23 +65,27 @@ for name, mdl in models.items():
     print(name, res[name])
 
 # ---- 主模型（GBM）输出催收优先级队列 ----
+# 催收对象 = 已到期(due<快照) 且 未结清(isOpen=1) 的发票；在其内部按 金额×概率 排序，
+# 而不是对全部验证集排序——否则会把刚过账、未到期的发票也排进"先催清单"（快照误读）。
 gbm = models["gbm"]
 p = gbm.predict_proba(Xva)[:, 1]
 df_val = df.loc[Xva.index].copy()
 df_val["open_prob"] = p
 df_val["priority"] = df_val["total_open_amount"] * df_val["open_prob"]
-df_val = df_val.sort_values("priority", ascending=False).reset_index(drop=True)
-
+snapshot = df["clear_date"].max()
+df_val["due_passed"] = df_val["due_in_date"] < snapshot
 imp = pd.Series(gbm.feature_importances_, index=Xtr.columns).sort_values(ascending=False)
 top_imp = imp.head(12).reset_index()
 top_imp.columns = ["feature", "importance"]
-
-queue = df_val[["invoice_id", "name_customer", "cust_payment_terms", "posting_date", "due_in_date",
-                "total_open_amount", "open_prob", "priority", "isOpen"]].head(50)
+collections = df_val[df_val["isOpen"] == 1].sort_values("priority", ascending=False)
+queue = collections[["invoice_id", "name_customer", "cust_payment_terms", "posting_date", "due_in_date",
+                     "total_open_amount", "open_prob", "priority", "isOpen"]].head(50)
 
 out = {"models": res, "top_features": top_imp.to_dict("records"),
        "n_train": int(Xtr.shape[0]), "n_val": int(Xva.shape[0]),
        "val_open_amount_total": round(float(df_val[df_val["isOpen"] == 1]["total_open_amount"].sum()), 2),
+       "collections_total": round(float(collections["total_open_amount"].sum()), 2),
+       "collections_n": int(len(collections)),
        "queue_top50_sum": round(float(queue["total_open_amount"].sum()), 2),
        "queue_top50_open": int((queue["isOpen"] == 1).sum())}
 with open(OUT_DIR / "ml_result.json", "w", encoding="utf-8") as f:

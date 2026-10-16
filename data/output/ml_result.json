@@ -72,6 +72,8 @@
   "n_train": 40000,
   "n_val": 10000,
   "val_open_amount_total": 68118564.94,
-  "queue_top50_sum": 9200026.71,
-  "queue_top50_open": 30
+  "collections_total": 68118564.94,
+  "collections_n": 2000,
+  "queue_top50_sum": 7960338.18,
+  "queue_top50_open": 50
 }

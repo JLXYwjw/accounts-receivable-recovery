@@ -99,7 +99,7 @@
     <li><strong>谁最该先催</strong> —— 用模型给每张未结清发票排"催收优先级"（未结清概率 × 金额）。</li>
     <li><strong>根因在哪</strong> —— 哪些付款条款、业务单元、客户逾期最严重，作为谈判依据。</li>
   </ul>
-  <p><strong>对账边界。</strong> 本项目完成的是<em>应收账款数据层对账</em>：把 `结清(clear_date) vs 未结清(isOpen)` 的缺口量化（$334M），并给出回收的先后顺序。业务层的逐笔凭证核对（invoice ↔ PO ↔ payment）需银行流水/对账单数据，本数据集不含，列为下一步，不冒充已做。</p>
+  <p><strong>对账边界。</strong> 本项目完成的是<em>应收账款数据层对账</em>：把 `结清(clear_date) vs 未结清(isOpen)` 的缺口量化（$334M，其中 <strong>$322.9M / 94.8% 已到期未结清</strong>=真逾期应收），并给出回收的先后顺序。业务层的逐笔凭证核对（invoice ↔ PO ↔ payment）需银行流水/对账单数据，本数据集不含，列为下一步，不冒充已做。</p>
   <p><strong>一句话目标：</strong> 用催收优先级队列 + 逾期根因，把催收人力投到"金额大 × 未结清概率高"的发票上，缩短 DSO、提高回收率。</p>
 </section>
 
@@ -117,7 +117,7 @@
     <tr><td>派生特征</td><td>过账→到期天数、过账→结清天数、到期→结清（逾期天数）、金额对数</td><td>支撑指标与建模</td></tr>
     <tr><td>数据切分</td><td>按过账日期前 80% 训练 / 后 20% 验证</td><td>时间不泄漏（见建模节修正）</td></tr>
   </table>
-  <p class="muted">无任何行被删除；输出 50,000 行 / 23 列。`clear_date` 缺失与 `isOpen=1` 在全部 50,000 行上一致，证明"未结清"标签可靠。</p>
+  <p class="muted">无任何行被删除；输出 50,000 行 / 23 列。`clear_date` 缺失与 `isOpen=1` 在全部 50,000 行上一致，证明"未结清"标签可靠。注意：字段 <code>total_open_amount</code> 列名沿袭原始导出，实际为该发票金额（已结清发票也有值），非仅"未结清金额"。</p>
 </section>
 
 <section id="s3">
@@ -127,7 +127,7 @@
     <div class="card"><div class="num">$16.2亿</div><div class="lbl">总应收</div></div>
     <div class="card"><div class="num">48,833</div><div class="lbl">发票</div></div>
     <div class="card"><div class="num">20%</div><div class="lbl">未结清率（10,000张）</div></div>
-    <div class="card"><div class="num">$3.34亿</div><div class="lbl">未结清缺口</div></div>
+    <div class="card"><div class="num">$3.23亿</div><div class="lbl">已到期未结清 · 94.8% 真逾期</div></div>
     <div class="card"><div class="num">18.1天</div><div class="lbl">DSO（已结清）</div></div>
     <div class="card"><div class="num">41.9%</div><div class="lbl">已结清中逾期付款</div></div>
   </div>
@@ -146,11 +146,11 @@
     </div>
     <div class="why">
       <div class="tag so">洞察</div>
-      <p>未结清缺口 = <strong>$334M</strong>（20% 的发票）。这不是坏账，主要是<strong>截至评估时点尚未完成结算</strong>的应收——需要进一步看时间分布（下图）才能判断催收紧迫度。</p>
+      <p>未结清缺口 = <strong>$334M</strong>（20% 的发票）。<strong>其中 94.8%（9,484 张、$322.9M）已到期未结清</strong>——是真正该催收的逾期应收，不是"还没到结算期"；仅 5.2% 是未到期的近月发票。</p>
     </div>
     <div class="why">
       <div class="tag rec">建议</div>
-      <p>先区分"<strong>刚过账、还没到结算期</strong>"和"<strong>已到期却未结清</strong>"两类，后者才是催收与坏账的重点。</p>
+      <p>催收资源集中投到<strong>已到期未结清的 $322.9M</strong>（9,484 张）；刚过账未到期的少量发票（5.2%）正常进入收款流程即可。</p>
     </div>
   </div>
 
@@ -167,11 +167,11 @@
     <p class="muted" style="font-size:12px;margin-top:6px">未结清金额 $334M ≈ $11M+$165M+$126M+$33M（近 4 个月）；历史月份已结清（open≈0）。</p>
     <div class="why">
       <div class="tag so">洞察</div>
-      <p>未结清缺口<strong>几乎全部来自最近 4 个月过账的发票</strong>（2020-02～05），2019 年及以前的发票基本已结清。这解释了为什么"未结清率 20%"不等于"坏账率 20%"。</p>
+      <p>未结清确实<strong>集中在近 4 个月过账</strong>（快照特性：数据 2020-05 导出，历史发票已结清）。但这不等于"不是问题"：<strong>这些近月发票里 94.8% 已到期未结清</strong>（$322.9M），是真逾期应收，是催收主池。</p>
     </div>
     <div class="why">
       <div class="tag rec">建议</div>
-      <p>对近月大额未结清做"<strong>账龄催收</strong>"（已到到期日 + 金额大优先）；对历史已结清但逾期付款的（下图 $571.7M）做"<strong>到账时效</strong>"改进。</p>
+      <p>把"<strong>已到期未结清</strong>"（$322.9M）作为催收主池：按到期日排序、金额优先；同时对已结清但逾期付款的（$571.7M）改进到账时效。</p>
     </div>
   </div>
 
@@ -249,10 +249,10 @@
   <div class="bar"><div class="bl">amount_log（金额对数）</div><div class="track"><div class="fill" style="width:3.8%;background:#0ea5e9"></div></div><div class="bv">0.038</div></div>
   <div class="bar"><div class="bl">days_to_due（账期天数）</div><div class="track"><div class="fill" style="width:2.8%;background:#0ea5e9"></div></div><div class="bv">0.028</div></div>
   <p class="muted">特征重要性（GBM）：posting_month 主导（0.92），即"未结清"主要由过账时间决定（近月发票未到结算期）。这是快照数据的真实特性，不是模型缺陷。</p>
-  <div class="callout"><strong>这为什么重要（诚实）。</strong> AUC 0.912 高，但<strong>约 92% 的信号来自"过账月份"</strong>——因为 <code>isOpen</code> 是评估时点的快照（近月未结清、历史已结清）。所以模型对"哪些发票在当下仍未结清"判断很准，但<strong>不能吹成"长期坏账预测"</strong>。它的业务价值在于：把 <em>金额 × 未结清概率</em> 做成优先级，在近月大额未结清中排出催收顺序——这部分排序仍是有用的。</p>
+  <div class="callout"><strong>这为什么重要（诚实）。</strong> AUC 0.912 高，但<strong>约 92% 的信号来自"过账月份"</strong>——因为 <code>isOpen</code> 是 2020-05 导出的快照标签：近月过账的发票才可能未结清，历史发票已结清。所以模型<strong>能复现"这张发票是否近月过账且未结清"</strong>，但<strong>不能预测长期坏账</strong>。它的可操作价值仅限于：在<strong>已到期未结清</strong>的 $322.9M 里用"金额×概率"排出催收先后——这是把快照信息转成优先级排序，不是因果预测。</div>
 
   <h3>4.3 产出：催收优先级队列</h3>
-  <p>验证集按 <strong>优先级 = 未结清金额 × 未结清概率</strong> 降序：队列 Top 50 合计约 <strong>$9.2M</strong>（其中 30 张当前未结清）。这是可直接交给催收团队的"先催清单"。</p>
+  <p>催收对象 = 验证集<strong>已到期未结清</strong>（2,000 张、$68.1M），按 <strong>优先级 = 金额 × 未结清概率</strong> 降序：Top 50 合计约 <strong>$8.0M</strong>，全部为当前未结清。这是可直接交给催收团队的"先催清单"——把催收人力先投到金额大且概率高的已逾期发票上。</p>
   <div class="callout"><strong>方法学说明 · 是否用深度学习。</strong> 本数据集 <strong>5 万行、纯表格、无序列</strong>：梯度提升/随机森林已达 AUC 0.91，且<strong>可解释</strong>（特征重要性、系数）——符合"催收叙事"。DL（MLP 等）在此规模收益有限、且不可解释，<strong>不作为主模型</strong>；沿用判断标准：DL 需数据量大才用，这里不足，仅作消融说明不做主角。</div>
 </section>
 
@@ -263,7 +263,7 @@
     <div class="card">
       <span class="pill">高影响</span>
       <h3 style="margin-top:6px">1 · 用催收优先级队列排催收顺序</h3>
-      <p>模型输出"金额 × 未结清概率"排序的 Top 队列（验证集 Top50 ≈ $9.2M），催收先投"金额大且可能未结清"；U001 业务单元优先。</p>
+      <p>以<strong>已到期未结清</strong>（$322.9M / 9,484 张）为催收主池，用模型"金额×未结清概率"排顺序（验证集 Top50 ≈ $8.0M），先催金额大且已逾期的；U001 业务单元优先。</p>
     </div>
     <div class="card">
       <span class="pill">高影响</span>
@@ -278,7 +278,7 @@
     <div class="card">
       <span class="pill">下一步</span>
       <h3 style="margin-top:6px">4 · 逐笔对账（invoice↔PO↔payment）</h3>
-      <p>本数据集做的是数据层缺口量化（$334M）与催收排序；逐笔凭证核对需银行流水/对账单数据，列为下一步，不冒充已做。</p>
+      <p>本数据集做的是数据层缺口量化（$334M，其中 $322.9M 已到期未结清）与催收排序；逐笔凭证核对需银行流水/对账单数据，列为下一步，不冒充已做。</p>
     </div>
   </div>
   <p class="muted">仓库交付物：清洗表（<code>data/output/ar_clean.parquet</code>）、指标（<code>metrics.json</code>）、ML 结果与优先级队列（<code>ml_result.json</code> / <code>ar_val_with_prob.parquet</code>）、本报告。</p>

@@ -15,21 +15,19 @@ Runs against the real SAP receivables dataset (`datasets/receivables/dataset.csv
 - Cleans a messy real export: drops a fully-empty column, normalizes mixed
   date formats (strings vs numeric `20200210.0`), and proves the label is sound —
   `clear_date` missing ⇔ `isOpen = 1` on **all 50,000 rows**.
-- Quantifies the reconciliation gap: **10,000 open invoices (20%) = ~$334M**,
-  mostly invoiced in the last 4 months (snapshot), plus **41.9% of paid invoices
-  were late** (~$571.7M).
-- Predicts which invoices will remain open (`isOpen`) with **GBM AUC 0.912**
-  (vs logistic baseline 0.67), and ranks them by **priority = open amount ×
-  probability** → a collections queue (top-50 ≈ $9.2M in the holdout set).
+- Quantifies the reconciliation gap: **10,000 open invoices (20%) = ~$334M**, of
+  which **94.8% (9,484, ~$322.9M) are already past-due** — the real collections
+  pool (not "not yet due"). Plus **41.9% of paid invoices were late** (~$571.7M).
+- Ranks the **past-due pool** by **priority = amount × probability** (GBM AUC
+  0.912 vs logistic baseline 0.67) → a collections queue (top-50 ≈ **$8.0M**,
+  all currently open, in the holdout).
 - Pinpoints the structural root cause: **payment term NAX2 is late 99.8% of the
   time, 42.6 days** — a negotiation target, not an accident.
 
 ## Honest notes (what I did NOT overclaim)
 
-- `isOpen` is a **snapshot** label: ~92% of the model's signal is `posting_month`
-  (recent invoices simply haven't hit their settlement cycle). AUC 0.912 is real,
-  but this is not a "bad-debt over time" model. The value is the **priority queue**,
-  not a long-horizon default forecast.
+- `isOpen` is a **snapshot** label taken on 2020-05-22: ~92% of the model's signal is `posting_month`, and **94.8% of open invoices are already past-due** (~$322.9M) — the real collections pool; only ~5% are not-yet-due. AUC 0.912 is real, but this is **not** a "bad-debt over time" forecast. The value is the priority queue **over the past-due pool**, not a long-horizon default model.
+- **Column note**: `total_open_amount` keeps the source naming — it is the invoice amount and is present on paid invoices too, not "only the open balance".
 - **No deep learning used**: 50k rows, plain tabular, no sequence. Gradient
   boosting already hits 0.91 AUC and stays *explainable* (feature importance).
   DL gains little here and hurts the collections narrative — same rule as my
@@ -65,9 +63,9 @@ pytest tests/ -q
 
 ## Key verified numbers
 
-- 50,000 lines / 48,833 invoices / ~$1.62B AR; open rate 20% ($334M); DSO 18.1d
+- 50,000 lines / 48,833 invoices / ~$1.62B AR; open rate 20% ($334M), of which **94.8% past-due ($322.9M)**; DSO 18.1d
 - Paid-but-late rate 41.9% ($571.7M); worst term NAX2 99.8% late, 42.6d
 - Models (holdout): logistic AUC 0.669 / RF 0.908 / **GBM 0.912**
-- Collections queue top-50 ≈ $9.2M in holdout
+- Holdout past-due pool 2,000 / $68.1M; collections queue top-50 ≈ $8.0M
 
 — Jiawei Wang

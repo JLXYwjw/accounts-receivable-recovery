@@ -11,12 +11,23 @@ m = {}
 m["total_rows"] = len(df)
 m["total_invoices"] = df["invoice_id"].nunique()
 m["total_amount"] = round(float(df["total_open_amount"].sum()), 2)
+# total_open_amount 列名沿袭原始命名，实际为发票金额（已结清发票也有值）
+m["total_open_amount_note"] = "列名沿袭原始命名，实际为该发票金额，非仅未结清金额"
 
 # 未结清
 sub = df[df["isOpen"] == 1]
 m["open_count"] = int(len(sub))
 m["open_rate_pct"] = round(len(sub) / len(df) * 100, 1)
 m["open_amount"] = round(float(sub["total_open_amount"].sum()), 2)
+
+# 真·逾期应收：已到期(due<评估时点) 且 未结清
+snapshot = df["clear_date"].max()
+m["snapshot_date"] = str(snapshot.date())
+open_df = sub.copy()
+open_df["due_passed"] = open_df["due_in_date"] < snapshot
+m["open_overdue_count"] = int(open_df["due_passed"].sum())
+m["open_overdue_amount"] = round(float(open_df.loc[open_df["due_passed"], "total_open_amount"].sum()), 2)
+m["open_overdue_rate_pct"] = round(float(open_df["due_passed"].mean() * 100), 1)
 
 # 已结清账期 DSO
 paid = df[df["isOpen"] == 0]
