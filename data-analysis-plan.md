@@ -1,107 +1,107 @@
-# 应收账款回收分析 · 项目大纲（Accounts Receivable Recovery）
+# Accounts Receivable Recovery — Analysis Plan (Project Outline)
 
-> 数据：`datasets/receivables/dataset.csv`（真实 SAP 应收账款，50,000 行，2019–2020）
-> 目标岗位：对账 / 追收（reconcile claims vs invoices vs payment, revenue recovery）
-
----
-
-## 1. 业务背景与目标
-
-**业务方**：财务 / 应收账款团队。
-**核心痛点**：5 万张应收发票里，有 **10,000 张（20%）到期后仍未结清**，对应未结清金额约 **$334M**。客户没有足够资源逐个催收，也不知道该先催谁——催收资源被摊薄，DSO（应收周转天数）被拖长，坏账风险累积。
-
-**本项目的目标（业务可落地）**：预测"哪些发票最可能到期后仍未结清"，据此排出**催收优先级**，把催收人力集中投到"金额大 × 未结清概率高"的发票上，从而：
-1. 提高回收率（先催能收回的）
-2. 缩短 DSO（尽快把应收到变成实收到）
-3. 为付款条款谈判提供依据（哪些条款逾期最严重）
-
-**对账角度**：`结清(clear_date) vs 未结清(isOpen)` 正是"应收到 vs 实收到"的对账缺口。本项目量化这个缺口（$334M），并给出回收的先后顺序——这正是"revenue recovery"岗位的核心动作。
+> Data: `datasets/receivables/dataset.csv` (real SAP accounts receivable, 50,000 rows, 2019–2020)
+> Target role: reconciliation / collections (reconcile claims vs invoices vs payment, revenue recovery)
 
 ---
 
-## 2. 数据理解（19 列）
+## 1. Business Background & Objectives
 
-| 字段 | 含义 | 备注 |
+**Business owner**: Finance / AR (accounts receivable) team.
+**Core pain**: of 50,000 receivable invoices, **10,000 (20%) remain unpaid past due**, ~ **$334M** in open amount. The team has no resources to chase every customer one by one, and does not know who to chase first — collection effort is spread thin, DSO (days sales outstanding) stretches, and bad-debt risk accumulates.
+
+**Objective of this project (business-landing)**: predict "which invoices are most likely to remain unpaid past due", and from that build a **collection priority queue**, concentrating collection effort on invoices with "large amount × high probability of remaining open", so as to:
+1. Increase recovery rate (chase what can be collected first);
+2. Shorten DSO (turn receivable into received sooner);
+3. Inform payment-term negotiation (which terms are worst for past-due).
+
+**Reconciliation angle**: `clear_date` (settled) vs `isOpen` (open) is exactly the "receivable vs received" reconciliation gap. This project quantifies the gap ($334M) and gives the recovery order — the core action of a "revenue recovery" role.
+
+---
+
+## 2. Data Understanding (19 columns)
+
+| Field | Meaning | Note |
 |---|---|---|
-| `invoice_id` / `doc_id` | 发票 / 凭证号 | doc_id 有重复（需去重判断） |
-| `business_code` | 业务单元（6 个） | U001 为主 |
-| `cust_number` / `name_customer` | 客户号 / 名称（1425 / 4197） | 真实公司名 |
-| `posting_date` / `baseline_create_date` | 过账日 / 基准创建日 | |
-| `due_in_date` | 应到期日 | |
-| `clear_date` | 实际结清日 | **20% 缺失 = 未结清** |
-| `total_open_amount` | 未结金额（USD） | 目标加权 |
-| `invoice_currency` | 币种（USD 46081 / CAD 3919） | |
-| `cust_payment_terms` | SAP 付款条款（74 种） | NAA8/NAH4… |
-| `isOpen` | **目标**：0 已结清 / 1 未结清 | 10000 / 40000，20% 正类 |
-| `area_business` | 空列 | **删除** |
-| `document type` | RV 应收 / X2 | 主 RV |
+| `invoice_id` / `doc_id` | Invoice / document no. | doc_id has duplicates (needs dedup judgment) |
+| `business_code` | Business unit (6) | U001 dominant |
+| `cust_number` / `name_customer` | Customer no. / name (1425 / 4197) | real company names |
+| `posting_date` / `baseline_create_date` | Posting date / baseline create date | |
+| `due_in_date` | Due date | |
+| `clear_date` | Actual settlement date | **20% missing = open** |
+| `total_open_amount` | Open amount (USD) | target weighting |
+| `invoice_currency` | Currency (USD 46081 / CAD 3919) | |
+| `cust_payment_terms` | SAP payment terms (74 kinds) | NAA8/NAH4… |
+| `isOpen` | **Target**: 0 settled / 1 open | 10000 / 40000, 20% positive |
+| `area_business` | Empty column | **drop** |
+| `document type` | RV receivable / X2 | RV dominant |
 
 ---
 
-## 3. 数据清洗 / 预处理计划
+## 3. Cleaning / Preprocessing Plan
 
-- 删除全空列 `area_business`
-- 日期：解析 `posting_date`/`clear_date`，把 `due_in_date`/`baseline_create_date`（数值 `20200210.0`）转 datetime
-- 缺失：`clear_date` 缺失即未结清（与 isOpen 对应，保留为特征"是否已结清日期"），`invoice_id` 0.01% 缺失补空
-- 重复：`doc_id` 多行共用（同凭证多明细），按 invoice 判定是否同一应收；明确口径
-- 派生特征：过账→到期天数、过账→结清天数（若结清）、到期→结清（逾期天数）、金额对数、业务单元/币种/条款编码
-- 时间切分：按 posting 日期前 80% 训练 / 后 20% 验证（防泄漏，不用未来信息预测）
+- Drop fully empty column `area_business`.
+- Dates: parse `posting_date`/`clear_date`; convert `due_in_date`/`baseline_create_date` (numeric `20200210.0`) to datetime.
+- Missing: missing `clear_date` means open (matches isOpen; keep as feature "has settlement date"); `invoice_id` 0.01% missing → blank.
+- Duplicates: `doc_id` shared across rows (one doc, many lines); judge by invoice whether it is the same receivable; state the definition clearly.
+- Derived features: posting→due days, posting→settlement days (if settled), due→settlement (past-due days), log amount, business-unit/currency/terms codes.
+- Time split: train on first 80% by posting date, validate on last 20% (prevent leakage; never use future info to predict).
 
 ---
 
-## 4. 指标
+## 4. Metrics
 
-| 指标 | 定义 | 用途 |
+| Metric | Definition | Use |
 |---|---|---|
-| 未结清率 | isOpen=1 占比（20%） | 缺口大小 |
-| 未结清金额 | Σ total_open_amount（isOpen=1，~$334M） | 可回收池 |
-| DSO | 平均过账→结清天数 | 收款效率 |
-| 逾期金额 / 逾期天数 | 到期日 vs 结清日 | 催收紧迫度 |
-| 催收优先级分 | 未结清金额 × 未结清概率 | 排序催收 |
-| ML 指标 | AUC / PR-AUC / 召回 | 抓全逾期 |
+| Open rate | share isOpen=1 (20%) | gap size |
+| Open amount | Σ total_open_amount (isOpen=1, ~$334M) | recoverable pool |
+| DSO | avg posting→settlement days | collection efficiency |
+| Past-due amount / days | due date vs settlement date | collection urgency |
+| Collection priority score | open amount × open probability | rank for collection |
+| ML metrics | AUC / PR-AUC / recall | catch all past-due |
 
 ---
 
-## 5. 建模（业务驱动，讲清原理/为什么/怎么用）
+## 5. Modeling (business-driven; explain principle/why/how)
 
-### 5.1 isOpen 二分类（核心）
-- **为什么**：规则只能分"逾期与否"，无法把 1 万张未结清发票**按回收风险排序**。ML 给每张发票一个"到期后仍未结清的概率"，× 金额即催收优先级。
-- **原理**：学习 特征→未结清概率 的映射。基线逻辑回归（可解释系数）→ 随机森林 / 梯度提升（树模型，抓交互与非线性，如"高金额 × 高逾期 × 特定条款"）。
-- **特征**：金额(log)、过账→到期天数、业务单元、币种、付款条款、客户历史结清率（CV 内计算防泄漏）、过账月份。
-- **评估**：AUC（排序）、PR-AUC（不平衡）、召回@高金额段（回收视角）。
-- **业务输出**：催收优先级队列 = 未结清概率 × 金额，Top N 直接给催收团队。
+### 5.1 isOpen binary classification (core)
+- **Why**: rules only separate "past due or not"; they cannot **rank the 10,000 open invoices by recovery risk**. ML gives each invoice a "probability of remaining unpaid past due", × amount = collection priority.
+- **Principle**: learn the mapping features→open probability. Baseline logistic regression (interpretable coefficients) → random forest / gradient boosting (tree models capture interactions and non-linearity, e.g. "high amount × high past-due × specific terms").
+- **Features**: log amount, posting→due days, business unit, currency, payment terms, customer historical settlement rate (computed within CV to prevent leakage), posting month.
+- **Evaluation**: AUC (ranking), PR-AUC (imbalance), recall@high-amount segment (recovery view).
+- **Business output**: collection priority queue = open probability × amount; top N handed directly to the collections team.
 
-### 5.2 是否用深度学习 —— 判断（诚实）
-- 本数据集 **50,000 行、纯表格、无序列**：梯度提升/随机森林即可达到很高表现，且**可解释**（特征重要性、系数），符合"催收叙事"。
-- DL（如 MLP）在此规模收益有限、可解释性差，**不作为主模型**；仅作消融对比说明，不做主角。→ 与采购项目同一判断标准：DL 需数据量大才用，这里不足。
-
----
-
-## 6. 可视化规划（每图下 Insight + Action，天蓝+金配色）
-
-1. **未结清分布**：isOpen 0/1 环形 + 金额对比（$334M 缺口）
-2. **业务单元维度**：各 business_code 的未结清率 / 金额
-3. **账期分布**：过账→到期天数直方（条款的体现）
-4. **付款条款 vs 逾期**：74 条款中 top 逾期条款
-5. **逾期金额趋势**：按过账月
-6. **ML 特征重要性**：横向条形（可解释性）
-7. **催收优先级 Top N**：金额 × 概率排序（可直接执行）
+### 5.2 Whether to use deep learning — judgment (honest)
+- This dataset is **50,000 rows, tabular, non-sequential**: gradient boosting / random forest already perform very well and are **interpretable** (feature importance, coefficients), matching the "collections narrative".
+- DL (e.g. MLP) adds little at this scale and is hard to explain — **not used as the main model**; only as an ablation comparison, not the protagonist. → Same standard as the procurement project: DL needs large data to pay off; here it is insufficient.
 
 ---
 
-## 7. 建议（落地）
+## 6. Visualization Plan (each chart Insight + Action; sky-blue + gold palette)
 
-1. **催收优先级队列**：ML 排序的 Top 未结清发票，先催"金额大×概率高"
-2. **条款谈判**：逾期最严重的付款条款纳入合同修订
-3. **对账缺口核对**：结清 vs 未结清逐笔核对，追回漏记
-4. **自动化提醒**：到期前自动触发催收工单，缩短 DSO
+1. **Open distribution**: isOpen 0/1 donut + amount comparison ($334M gap).
+2. **Business-unit view**: open rate / amount by business_code.
+3. **Aging distribution**: posting→due days histogram (reflecting terms).
+4. **Payment terms vs past-due**: top past-due among the 74 terms.
+5. **Past-due amount trend**: by posting month.
+6. **ML feature importance**: horizontal bars (interpretability).
+7. **Collection priority Top N**: amount × probability ranking (directly executable).
 
 ---
 
-## 8. 交付物
+## 7. Recommendations (landing)
 
-- 清洗表 `data/output/ar_clean.parquet` / CSV
-- ML 结果（概率、优先级队列）
-- 中文 HTML 报告（每图 Insight/Action）
-- 测试（清洗口径、数字一致性、可复现）
-- 本地 git 小步提交
+1. **Collection priority queue**: ML-ranked top open invoices, chase "large amount × high probability" first.
+2. **Terms negotiation**: bring the worst past-due payment terms into contract revision.
+3. **Reconciliation gap check**: line-by-line settled vs open, recover omissions.
+4. **Automated reminders**: trigger collection tickets before due, shortening DSO.
+
+---
+
+## 8. Deliverables
+
+- Clean table `data/output/ar_clean.parquet` / CSV.
+- ML results (probabilities, priority queue).
+- Bilingual HTML reports (every chart Insight/Action).
+- Tests (cleaning definitions, number consistency, reproducibility).
+- Local git committed in small steps.
