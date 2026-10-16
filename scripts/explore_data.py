@@ -5,7 +5,7 @@
 import pandas as pd
 from pathlib import Path
 
-SRC = Path(r"D:\B编程\powerBI\github\datasets\receivables\dataset.csv")
+SRC = Path(__file__).resolve().parent.parent / "data" / "raw" / "dataset.csv"
 pd.set_option("display.max_rows", 300)
 pd.set_option("display.width", 260)
 pd.set_option("display.max_colwidth", 40)

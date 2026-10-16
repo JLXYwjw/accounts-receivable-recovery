@@ -15,7 +15,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-SRC = Path(r"D:\B编程\powerBI\github\datasets\receivables\dataset.csv")
+SRC = Path(__file__).resolve().parent.parent / "data" / "raw" / "dataset.csv"
 OUT_DIR = Path(__file__).resolve().parent.parent / "data" / "output"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 OUT_PARQUET = OUT_DIR / "ar_clean.parquet"
