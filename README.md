@@ -36,9 +36,13 @@ Runs against the real SAP receivables dataset (`datasets/receivables/dataset.csv
   line-level invoice↔PO↔payment matching needs bank statements, listed as next
   step — not claimed as done.
 
-## Report preview
+## Charts
 
-![Report preview](assets/report-preview.jpg)
+![Reconciliation gap](assets/chart_01.png)
+![Monthly open balance](assets/chart_02.png)
+![Payment timeliness](assets/chart_03.png)
+![Term x overdue](assets/chart_04.png)
+![Business unit x open](assets/chart_05.png)
 
 > Full interactive report: `报告/应收对账分析报告.html` — GitHub doesn't render HTML; open locally after cloning.
 
