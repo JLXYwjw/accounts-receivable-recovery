@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accounts Receivable Recovery: Open Balance Gap &amp; Collections Priority</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%2314b8a6'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23ea580c'/%3E%3C/svg%3E">
+<style>
+  :root{--navy:#0f766e;--blue:#14b8a6;--accent:#ea580c;--accent-soft:#fffbeb;--ink:#0f172a;--muted:#64748b;--line:#d7f0ea;--bg:#ecfdf5;--card:#fff;--green:#10b981}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.7}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px 80px}
+  header.hero{background:linear-gradient(135deg,#134e4a,#0d9488);color:#fff;padding:56px 24px 44px;margin-bottom:8px}
+  header.hero h1{margin:0 0 12px;font-size:30px;line-height:1.25}
+  header.hero .sub{opacity:.94;font-size:16px;max-width:900px}
+  header.hero .meta{margin-top:18px;font-size:13px;opacity:.85}
+  nav.tabs{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:5;padding:10px 24px}
+  nav.tabs .wrap{padding:0;display:flex;gap:6px;flex-wrap:wrap;max-width:1080px}
+  nav.tabs a{color:var(--blue);text-decoration:none;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px}
+  nav.tabs a:hover{background:#d7f0ea}
+  section{padding:36px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:22px;margin:0 0 8px}
+  h2 .n{color:var(--blue)}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
+  h3{font-size:17px;margin:24px 0 8px}
+  p,li{font-size:14.5px}
+  .muted{color:var(--muted)}
+  .grid{display:grid;gap:16px}
+  .cards{grid-template-columns:repeat(3,1fr);margin:18px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(15,118,110,.08)}
+  .card .num{font-size:26px;font-weight:800;color:var(--navy)}
+  .card .lbl{font-size:13px;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0;background:#fff;table-layout:fixed}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;overflow-wrap:break-word}
+  th{background:#ecfdf5;font-weight:700;color:var(--navy)}
+  .fig{margin:22px 0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 16px;box-shadow:0 1px 3px rgba(15,118,110,.08)}
+  .fig h4{font-size:15px;margin:0 0 4px}
+  .fig .cap{font-size:12px;color:var(--muted);margin:0 0 12px}
+  .fig .why{display:flex;gap:12px;margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+  .fig .why .tag{flex:0 0 60px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+  .fig .why .tag.so{color:var(--blue)}
+  .fig .why .tag.rec{color:var(--accent)}
+  .fig .why p{margin:0;font-size:13.5px}
+  .pill{display:inline-block;background:#d7f0ea;color:var(--navy);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600;margin-right:6px}
+  .callout{background:var(--accent-soft);border:1px solid #fed7aa;border-left:4px solid var(--accent);padding:12px 16px;border-radius:8px;margin:14px 0;font-size:14px}
+  .two{grid-template-columns:1fr 1fr}
+  @media(max-width:720px){.two{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.bar{flex-wrap:wrap}.bar .bl{flex:0 0 100%;text-align:left;font-size:12px}.bar .bv{flex:0 0 96px;font-size:11px}.bar .track{min-width:40px}}
+  footer{padding:30px 24px 60px;font-size:12.5px;color:var(--muted)}
+  ul{margin:6px 0 14px;padding-left:20px}
+  /* CSS charts */
+  .bar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:13px}
+  .bar .bl{width:180px;flex:0 0 180px;text-align:right;color:var(--ink)}
+  .bar .track{flex:1;background:#e2e8f0;border-radius:6px;height:22px;position:relative;min-width:60px}
+  .bar .fill{height:100%;border-radius:6px}
+  .bar .bv{flex:0 0 110px;color:var(--muted);font-size:12px}
+  .donut{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .donut .ring{--p:0;width:150px;height:150px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p)*1%),#99f6e4 0);display:flex;align-items:center;justify-content:center}
+  .donut .ring .hole{width:96px;height:96px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:12px;color:var(--muted)}
+  .donut .ring .hole b{font-size:20px;color:var(--navy)}
+  .cols{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-top:8px}
+  .cols .col{flex:1;min-width:90px;text-align:center}
+  .cols .col .ht{background:#14b8a6;border-radius:8px 8px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;color:#fff;font-weight:700}
+  .cols .col .lb{font-size:12px;margin-top:6px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker" style="color:#d7f0ea">Data Analysis · Accounts Receivable Recovery (Reconcile · Collect)</div>
+    <h1>Accounts Receivable Recovery: Open-Balance Gap &amp; Collections Priority</h1>
+    <p class="sub">Analysis of a 50k-row real SAP receivables extract: find the "billed vs received" reconciliation gap ($334M open), score every invoice by collections priority with ML, and put collections effort where it is most likely to be recovered.</p>
+    <div class="meta">Data: real SAP accounts receivable (2018–2020) · 50,000 lines / 48,833 invoices · total AR $1.62B</div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <a href="#s1"><span class="n">1</span> · Objective</a>
+    <a href="#s2"><span class="n">2</span> · Cleaning</a>
+    <a href="#s3"><span class="n">3</span> · Metrics &amp; Charts</a>
+    <a href="#s4"><span class="n">4</span> · Modeling</a>
+    <a href="#s5"><span class="n">5</span> · Recommendations</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<section id="s1">
+  <div class="kicker">Part 1 · Business Objective</div>
+  <h2><span class="n">1.</span> Why this analysis</h2>
+  <p>Finance/AR teams face <strong>48,833 invoices / $1.62B AR</strong>, of which <strong>10,000 (20%) are still open at the snapshot date</strong>, worth about <strong>$334M</strong>. The team cannot chase every invoice, and doesn't know whom to chase first — collections get diluted, DSO stretches, bad debt builds up.</p>
+  <p><strong>This project answers three questions:</strong></p>
+  <ul>
+    <li><strong>How big is the gap, where is it</strong> — the open ("billed vs received") balance, its distribution and concentration.</li>
+    <li><strong>Who to chase first</strong> — score every open invoice by collections priority (open probability × amount).</li>
+    <li><strong>Where is the root cause</strong> — which payment terms, business units, customers are worst for overdue, as negotiation leverage.</li>
+  </ul>
+  <p><strong>Reconciliation boundary.</strong> This project completes the <em>receivables data-layer reconciliation</em>: quantify the `clear_date vs isOpen` gap ($334M, of which <strong>$322.9M / 94.8% is already past-due-open</strong> = true overdue AR), and give a recovery order. Line-level voucher matching (invoice ↔ PO ↔ payment) needs bank statements, which this dataset lacks — listed as next step, not claimed done.</p>
+  <p><strong>One-line goal:</strong> use a collections-priority queue + overdue root cause to put collections effort on "large amount × likely open" invoices, shortening DSO and lifting recovery rate.</p>
+</section>
+
+<section id="s2">
+  <div class="kicker">Part 2 · Cleaning &amp; Preprocessing</div>
+  <h2><span class="n">2.</span> How the raw SAP export became a usable table</h2>
+  <p>The raw CSV (50,000 rows / 19 cols) has typical real-finance-data dirt:</p>
+  <table>
+    <colgroup><col style="width:26%"><col style="width:38%"><col style="width:36%"></colgroup>
+    <tr><th>Issue</th><th>Handling</th><th>Impact</th></tr>
+    <tr><td>Fully-empty column <code>area_business</code></td><td>Dropped</td><td>Removes a useless column</td></tr>
+    <tr><td>Mixed date formats (string/numeric <code>20200210.0</code>)</td><td>Parsed to datetime</td><td>Aging/overdue computable</td></tr>
+    <tr><td><code>clear_date</code> 20% missing</td><td>Missing = open, cross-checked vs <code>isOpen</code></td><td>Consistent on all 50,000 rows (strong check)</td></tr>
+    <tr><td>Duplicate <code>doc_id</code> (multi-line vouchers)</td><td>Recorded, kept line-level</td><td>1,161 lines belong to multi-line vouchers</td></tr>
+    <tr><td>Derived features</td><td>posting→due days, posting→clear days, due→clear (overdue days), log amount</td><td>Support metrics &amp; modeling</td></tr>
+    <tr><td>Data split</td><td>80/20 stratified random</td><td>No temporal leakage (see modeling fix)</td></tr>
+  </table>
+  <p class="muted">No rows were dropped; output is 50,000 rows / 23 cols. `clear_date` missing matches `isOpen=1` on all 50,000 rows, proving the "open" label is sound. Note: column <code>total_open_amount</code> keeps the source naming; it is the invoice amount and exists on paid invoices too, not only "the open balance".</p>
+</section>
+
+<section id="s3">
+  <div class="kicker">Part 3 · Key Metrics &amp; Charts</div>
+  <h2><span class="n">3.</span> Key numbers</h2>
+  <div class="grid cards">
+    <div class="card"><div class="num">$1.62B</div><div class="lbl">Total AR</div></div>
+    <div class="card"><div class="num">48,833</div><div class="lbl">Invoices</div></div>
+    <div class="card"><div class="num">20%</div><div class="lbl">Open rate (10,000)</div></div>
+    <div class="card"><div class="num">$322.9M</div><div class="lbl">Past-due open · 94.8% true overdue</div></div>
+    <div class="card"><div class="num">18.1d</div><div class="lbl">DSO (settled)</div></div>
+    <div class="card"><div class="num">41.9%</div><div class="lbl">Late payments among settled</div></div>
+  </div>
+
+  <div class="fig">
+    <h4>Reconciliation gap — 20% of invoices, $334M open</h4>
+    <p class="cap">Billed vs received: 80% settled (40,000), 20% open (10,000, $334.2M)</p>
+    <div class="donut">
+      <div class="ring" style="--p:20">
+        <div class="hole"><b>20%</b>Open</div>
+      </div>
+      <div style="flex:1;min-width:200px">
+        <div class="bar"><div class="bl">Settled</div><div class="track"><div class="fill" style="width:80%;background:#14b8a6"></div></div><div class="bv">40,000 · 80%</div></div>
+        <div class="bar"><div class="bl">Open</div><div class="track"><div class="fill" style="width:20%;background:#ea580c"></div></div><div class="bv">10,000 · $334M</div></div>
+      </div>
+    </div>
+    <div class="why">
+      <div class="tag so">Insight</div>
+      <p>The open gap = <strong>$334M</strong> (20% of invoices). <strong>Of it, 94.8% (9,484, $322.9M) is already past-due-open</strong> — true overdue AR to chase, not "not yet due"; only 5.2% are recent, still-within-term invoices.</p>
+    </div>
+    <div class="why">
+      <div class="tag rec">Action</div>
+      <p>Concentrate collections on the <strong>past-due-open $322.9M</strong> (9,484 invoices); the few recent not-yet-due (5.2%) just flow through normal billing.</p>
+    </div>
+  </div>
+
+  <div class="fig">
+    <h4>Open balance by month — concentrated in the last 4 months (snapshot, not historical bad debt)</h4>
+    <p class="cap">By posting month: 2019 invoices are almost fully settled; open balance is concentrated in 2020-02 ~ 2020-05 postings (still in their settlement cycle)</p>
+    <div class="cols">
+      <div class="col"><div class="ht" style="height:6px;background:#99f6e4;font-size:0">.0</div><div class="lb">2019 months</div></div>
+      <div class="col"><div class="ht" style="height:12px;background:#ea580c">$11M</div><div class="lb">2020-02</div></div>
+      <div class="col"><div class="ht" style="height:150px;background:#ea580c">$165M</div><div class="lb">2020-03</div></div>
+      <div class="col"><div class="ht" style="height:115px;background:#ea580c">$126M</div><div class="lb">2020-04</div></div>
+      <div class="col"><div class="ht" style="height:32px;background:#ea580c">$33M</div><div class="lb">2020-05</div></div>
+    </div>
+    <p class="muted" style="font-size:12px;margin-top:6px">Open $334M ≈ $11M+$165M+$126M+$33M (last 4 months); historical months are settled (open≈0).</p>
+    <div class="why">
+      <div class="tag so">Insight</div>
+      <p>Open balance is indeed <strong>concentrated in the last 4 months</strong> (snapshot: data exported 2020-05, older invoices settled). That does not mean it is harmless: <strong>94.8% of these recent invoices are already past-due-open</strong> ($322.9M) — the true overdue pool and the main collections target.</p>
+    </div>
+    <div class="why">
+      <div class="tag rec">Action</div>
+      <p>Treat "<strong>past-due open</strong>" ($322.9M) as the collections pool: sort by due date, amount first; meanwhile improve payment timeliness for settled-but-late ($571.7M).</p>
+    </div>
+  </div>
+
+  <div class="fig">
+    <h4>Payment timeliness — avg 17.1d to due, but 41.9% of settled were late</h4>
+    <p class="cap">Settled invoices' avg "posting→clear" = DSO 18.1d; 41.9% of them (by amount $571.7M) paid later than due</p>
+    <div class="bar"><div class="bl">Avg aging (posting→due)</div><div class="track"><div class="fill" style="width:47%;background:#14b8a6"></div></div><div class="bv">17.1 days</div></div>
+    <div class="bar"><div class="bl">DSO (posting→clear)</div><div class="track"><div class="fill" style="width:50%;background:#14b8a6"></div></div><div class="bv">18.1 days</div></div>
+    <div class="bar"><div class="bl">Late among settled</div><div class="track"><div class="fill" style="width:42%;background:#ea580c"></div></div><div class="bv">41.9% · $571.7M</div></div>
+    <div class="why">
+      <div class="tag so">Insight</div>
+      <p>Average DSO is only 18.1 days, but <strong>41.9% of settled invoices were still paid late</strong> ($571.7M) — a real "due but not on time" cash-flow drag.</p>
+    </div>
+    <div class="why">
+      <div class="tag rec">Action</div>
+      <p>Build <strong>due reminders + overdue escalation</strong> to cut the late-payment share from 41.9% — faster payback than chasing historical bad debt.</p>
+    </div>
+  </div>
+
+  <div class="fig">
+    <h4>Payment term × overdue — NAX2 is almost always late (99.8%), by 42.6 days</h4>
+    <p class="cap">Settled invoices by payment term (sample ≥ 50); NAX2 is the #1 negotiation target</p>
+    <div class="bar"><div class="bl">NAX2</div><div class="track"><div class="fill" style="width:99.8%;background:#ea580c"></div></div><div class="bv">99.8% late · 42.6d</div></div>
+    <div class="bar"><div class="bl">NAM1</div><div class="track"><div class="fill" style="width:86.2%;background:#ea580c"></div></div><div class="bv">86.2% · 2.2d</div></div>
+    <div class="bar"><div class="bl">CA10</div><div class="track"><div class="fill" style="width:75.4%;background:#ea580c"></div></div><div class="bv">75.4% · 6.9d (3,075)</div></div>
+    <div class="bar"><div class="bl">NAG2</div><div class="track"><div class="fill" style="width:71.5%;background:#ea580c"></div></div><div class="bv">71.5% · 8.0d</div></div>
+    <div class="bar"><div class="bl">NAVF</div><div class="track"><div class="fill" style="width:71.4%;background:#ea580c"></div></div><div class="bv">71.4% · 21.4d</div></div>
+    <div class="why">
+      <div class="tag so">Insight</div>
+      <p>Payment terms drive overdue behavior: <strong>of NAX2's 548 invoices, 99.8% are late, avg 42.6 days</strong>; CA10 is the largest (3,075) with 75% late. Terms are a <strong>structural root cause</strong>, not an accident.</p>
+    </div>
+    <div class="why">
+      <div class="tag rec">Action</div>
+      <p>Make <strong>NAX2 / CA10 / NAVF</strong> the focus of <strong>contract renegotiation</strong> (shorten terms or add late penalties); differentiate collection scripts by term for the existing book.</p>
+    </div>
+  </div>
+
+  <div class="fig">
+    <h4>Business unit × open — U001 largest, U013 lowest rate</h4>
+    <p class="cap">Open amount and open rate by business unit (amount = bar, rate = side label)</p>
+    <div class="bar"><div class="bl">U001</div><div class="track"><div class="fill" style="width:86%;background:#0f766e"></div></div><div class="bv">$287.8M · 20.2%</div></div>
+    <div class="bar"><div class="bl">CA02</div><div class="track"><div class="fill" style="width:13%;background:#14b8a6"></div></div><div class="bv">$44.3M · 18.8%</div></div>
+    <div class="bar"><div class="bl">U013</div><div class="track"><div class="fill" style="width:0.4%;background:#14b8a6"></div></div><div class="bv">$1.3M · 12.6%</div></div>
+    <div class="bar"><div class="bl">U002</div><div class="track"><div class="fill" style="width:0.3%;background:#14b8a6"></div></div><div class="bv">$0.9M · 14.1%</div></div>
+    <div class="why">
+      <div class="tag so">Insight</div>
+      <p><strong>U001 alone is 86% of the open balance</strong> ($287.8M) at a 20.2% open rate; U013 has the lowest rate (12.6%). Collections effort should go to U001 first.</p>
+    </div>
+    <div class="why">
+      <div class="tag rec">Action</div>
+      <p>Give U001 its own collection target and owner; benchmark U013's terms/process to find practices U001 can copy.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s4">
+  <div class="kicker">Part 4 · Modeling</div>
+  <h2><span class="n">4.</span> Business-driven prediction (principle · why · how)</h2>
+
+  <h3>4.1 Goal: predict "still open after due" (isOpen binary)</h3>
+  <p><strong>Why (business-driven).</strong> A rule can only say "overdue or not"; it cannot <strong>rank 10,000 open invoices by recovery risk</strong>. ML gives each invoice an "open probability", then × amount → <strong>collections priority</strong> — chase "large and likely-open" first, instead of blindly sorting by amount (which misses many small-but-recoverable invoices).</p>
+  <p><strong>Principle.</strong> Learn the mapping features → open probability: baseline <em>logistic regression</em> (interpretable coefficients), then <em>random forest / gradient boosting</em> (trees capture interactions &amp; nonlinearity, e.g. "high amount × high overdue × specific term").</p>
+  <p><strong>How &amp; leakage control.</strong> Features = log amount, posting→due days, payment term, business unit, currency, posting month, customer frequency (frequency stats from training only). Stratified random 80/20 split. Key fix: <code>isOpen</code> is a snapshot label strongly tied to posting time — <strong>a temporal split would put mostly recent, not-yet-due invoices in validation and AUC would fall below random (measured 0.33)</strong>; so a stratified split is used, targeting "whether the invoice is ultimately open".</p>
+  <table>
+    <colgroup><col style="width:22%"><col style="width:20%"><col style="width:20%"><col style="width:20%"><col style="width:18%"></colgroup>
+    <tr><th>Model</th><th>CV-AUC</th><th>Test AUC</th><th>PR-AUC</th><th>High-amount recall</th></tr>
+    <tr><td>Logistic (baseline)</td><td>0.670</td><td>0.669</td><td>0.247</td><td>0.897</td></tr>
+    <tr><td>Random Forest</td><td>0.909</td><td>0.908</td><td>0.610</td><td>0.954</td></tr>
+    <tr><td>GBM (main)</td><td>0.915</td><td>0.912</td><td>0.623</td><td>0.804</td></tr>
+  </table>
+  <p class="muted">Trees clearly beat the linear baseline; GBM test AUC 0.912 is highest, chosen as the main model.</p>
+
+  <h3>4.2 Honest read: what the model actually learned</h3>
+  <div class="bar"><div class="bl">posting_month</div><div class="track"><div class="fill" style="width:92%;background:#0f766e"></div></div><div class="bv">0.920</div></div>
+  <div class="bar"><div class="bl">amount_log</div><div class="track"><div class="fill" style="width:3.8%;background:#14b8a6"></div></div><div class="bv">0.038</div></div>
+  <div class="bar"><div class="bl">days_to_due</div><div class="track"><div class="fill" style="width:2.8%;background:#14b8a6"></div></div><div class="bv">0.028</div></div>
+  <p class="muted">Feature importance (GBM): posting_month dominates (0.92) — "open" is mainly decided by posting time (recent invoices still in term). This is a true property of snapshot data, not a model flaw.</p>
+  <div class="callout"><strong>Why this matters (honestly).</strong> AUC 0.912 is high, but <strong>~92% of the signal is "posting month"</strong> — because <code>isOpen</code> is a 2020-05 snapshot: only recent postings can still be open; older ones are settled. So the model <strong>reproduces "is this a recent posting that is open"</strong>, not long-horizon bad-debt prediction. Its actionable value is limited to: within the <strong>past-due-open $322.9M</strong>, rank with "amount × probability" — turning snapshot info into a priority queue, not causal forecasting.</div>
+
+  <h3>4.3 Output: collections priority queue</h3>
+  <p>Collection set = validation <strong>past-due-open</strong> (2,000, $68.1M), ranked by <strong>priority = amount × open probability</strong> descending: Top 50 ≈ <strong>$8.0M</strong>, all currently open. This is a hand-off "chase-first list" for the collections team.</p>
+  <div class="callout"><strong>Method note · deep learning?</strong> The dataset is <strong>50k rows, plain tabular, no sequence</strong>: GBM/RF already reach AUC 0.91 and are <strong>interpretable</strong> (feature importance, coefficients) — fitting the "collections story". DL (MLP etc.) adds little at this scale and hurts explainability, <strong>so it is not the main model</strong>; per my rule, DL needs enough data and is only a footnote here.</div>
+</section>
+
+<section id="s5">
+  <div class="kicker">Part 5 · Recommendations</div>
+  <h2><span class="n">5.</span> One actionable plan</h2>
+  <div class="grid two">
+    <div class="card">
+      <span class="pill">High impact</span>
+      <h3 style="margin-top:6px">1 · Run the collections queue in priority order</h3>
+      <p>Use <strong>past-due open</strong> ($322.9M / 9,484) as the pool, order by model "amount × open probability" (validation Top50 ≈ $8.0M); chase large &amp; already-overdue first; U001 business unit first.</p>
+    </div>
+    <div class="card">
+      <span class="pill">High impact</span>
+      <h3 style="margin-top:6px">2 · Renegotiate terms: NAX2 / CA10 / NAVF</h3>
+      <p>NAX2 is almost always late (99.8%, avg 42.6d), CA10 is large (3,075, 75% late) — amend contracts or add late penalties to shorten aging at the source.</p>
+    </div>
+    <div class="card">
+      <span class="pill">Cash flow</span>
+      <h3 style="margin-top:6px">3 · Due reminders + escalation to cut the 41.9% late rate</h3>
+      <p>41.9% ($571.7M) of settled invoices arrive past due. Auto-remind before due, auto-escalate after — target lowering the late share.</p>
+    </div>
+    <div class="card">
+      <span class="pill">Next step</span>
+      <h3 style="margin-top:6px">4 · Line-level reconciliation (invoice↔PO↔payment)</h3>
+      <p>This dataset supports data-layer gap quantification ($334M, of which $322.9M past-due open) + collections ranking; voucher-level matching needs bank statements, listed as next step, not claimed done.</p>
+    </div>
+  </div>
+  <p class="muted">Repo deliverables: cleaned table (<code>data/output/ar_clean.parquet</code>), metrics (<code>metrics.json</code>), ML results &amp; priority queue (<code>ml_result.json</code> / <code>ar_val_with_prob.parquet</code>), this report.</p>
+</section>
+
+</div>
+<footer>Accounts Receivable Recovery — Jiawei Wang</footer>
+</body>
+</html>
