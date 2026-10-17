@@ -4,5 +4,5 @@ data/raw/
 data/output/
 __pycache__/
 .pytest_cache/
-报告/_shots/
+report/_shots/
 *.pyc

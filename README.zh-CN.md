@@ -40,7 +40,7 @@
 ![付款条款 × 逾期](assets/chart_04.png)
 ![业务单元 × 未结清](assets/chart_05.png)
 
-> 完整交互版报告：`报告/应收对账分析报告.html`——GitHub 不渲染仓库内 HTML，clone 后本地打开。
+> 完整交互版报告：`report/应收对账分析报告.html`——GitHub 不渲染仓库内 HTML，clone 后本地打开。
 
 ## 六、数据来源
 
