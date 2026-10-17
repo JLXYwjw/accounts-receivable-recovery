@@ -1,3 +1,12 @@
+import os
+from pathlib import Path
+import pytest
+_CLEAN_OUT = Path("data/output") / "ar_clean.parquet"
+pytestmark = pytest.mark.skipif(
+    not _CLEAN_OUT.exists(),
+    reason="cleaned parquet absent (git-excluded); run cleaning first",
+)
+
 # -*- coding: utf-8 -*-
 """清洗口径测试：ar_clean.parquet 的结构与一致性。"""
 from pathlib import Path

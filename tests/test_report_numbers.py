@@ -1,3 +1,12 @@
+import os
+from pathlib import Path
+import pytest
+_CLEAN_OUT = Path("data/output") / "ar_clean.parquet"
+pytestmark = pytest.mark.skipif(
+    not _CLEAN_OUT.exists(),
+    reason="cleaned parquet absent (git-excluded); run cleaning first",
+)
+
 # -*- coding: utf-8 -*-
 """报告数字一致性测试：从 parquet/metrics/ml 重算关键数字，断言 HTML 含同数字。"""
 import json
