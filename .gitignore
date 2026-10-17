@@ -6,3 +6,17 @@ __pycache__/
 .pytest_cache/
 report/_shots/
 *.pyc
+# Power BI / Tableau artifacts (generated locally, NOT uploaded to GitHub)
+*.pbip
+*.pbix
+*.pbit
+*.twb
+*.twbx
+*.Report/
+*.SemanticModel/
+data/bi/
+scripts/build_bi.py
+scripts/build_hyper.py
+scripts/build_pbip.py
+scripts/export_pbip_csv.py
+scripts/validate_pbip.py
