@@ -10,6 +10,7 @@
 Exits 0 on success, 1 on any failure.
 """
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -32,10 +33,13 @@ def main() -> int:
     errors = []
 
     # --- 1/2. document language consistency -------------------------------
-    doc_files = list(root.glob("*.md")) + list(root.glob("*.html"))
-    report_dir = root / "report"
-    if report_dir.is_dir():
-        doc_files += list(report_dir.glob("*.html"))
+    # Scan only git-tracked .md/.html (untracked local docs like OPERATIONS.md are
+    # intentionally ignored) so the gate reflects exactly what gets published.
+    r = subprocess.run(
+        ["git", "ls-files", "*.md", "*.html"],
+        cwd=str(root), capture_output=True, text=True, encoding="utf-8",
+    )
+    doc_files = [root / f for f in r.stdout.splitlines() if f]
     seen = set()
     for fp in doc_files:
         p = fp.resolve()

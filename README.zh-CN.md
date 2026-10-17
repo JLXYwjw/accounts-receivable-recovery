@@ -1,4 +1,6 @@
 # 应收账款回收与催收优先级（Accounts Receivable Recovery & Collections Priority）
+![CI](https://github.com/JLXYwjw/accounts-receivable-recovery/actions/workflows/ci.yml/badge.svg)
+
 
 > 项目目标：在真实 SAP 应收账款数据上量化"应该收到 vs 实际收到"的缺口，并把未结发票按"值得先催"排序成催收队列，让催收团队把时间花在回报最高的地方。
 > 数据：真实 SAP 应收账款快照（50,000 行发票，2018–2020，应收合计约 **$1.62B**）。
@@ -78,3 +80,9 @@ pytest tests/ -q
 - 这是**逾期池的优先级队列**，不是随时间的坏账预测。
 
 — Jiawei Wang
+
+## CI / 质量门
+
+每次 push 或拉取请求都会触发 [GitHub Actions](.github/workflows/ci.yml) 工作流：质量门检查「英文文档不含中文、引用的图表都存在、中英 README 与 index 齐全」，随后运行 `pytest` 测试套件。
+
+![CI](https://github.com/JLXYwjw/accounts-receivable-recovery/actions/workflows/ci.yml/badge.svg)

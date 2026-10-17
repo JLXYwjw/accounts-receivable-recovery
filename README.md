@@ -1,4 +1,6 @@
 # Accounts Receivable Recovery — Reconciliation & Collections Priority
+![CI](https://github.com/JLXYwjw/accounts-receivable-recovery/actions/workflows/ci.yml/badge.svg)
+
 
 **The business problem.** An e-commerce / B2B finance team doesn't get paid on
 time, and nobody knows *which* unpaid invoices to chase first. Before you can
@@ -99,3 +101,9 @@ kaggle datasets download -d mustafakeser4/sap-dataset-bigquery-dataset -p data/r
 ```
 
 — Jiawei Wang
+
+## CI / Quality Gate
+
+Every push or pull request runs a [GitHub Actions](.github/workflows/ci.yml) workflow: a quality gate checks that English docs contain no Chinese, every referenced chart exists, and the bilingual README + index are all present; then `pytest` runs the test suite.
+
+![CI](https://github.com/JLXYwjw/accounts-receivable-recovery/actions/workflows/ci.yml/badge.svg)
