@@ -2,71 +2,77 @@
   "models": {
     "logistic": {
       "cv_auc_mean": 0.6702,
-      "test_auc": 0.6694,
-      "test_pr_auc": 0.2466,
-      "recall_hi_amount": 0.8974
+      "test_auc": 0.6697,
+      "test_pr_auc": 0.2467,
+      "recall_hi_amount": 0.8989
     },
     "random_forest": {
-      "cv_auc_mean": 0.9094,
-      "test_auc": 0.9076,
-      "test_pr_auc": 0.61,
+      "cv_auc_mean": 0.9096,
+      "test_auc": 0.9068,
+      "test_pr_auc": 0.6037,
       "recall_hi_amount": 0.9541
     },
     "gbm": {
-      "cv_auc_mean": 0.9151,
+      "cv_auc_mean": 0.9153,
       "test_auc": 0.912,
-      "test_pr_auc": 0.623,
+      "test_pr_auc": 0.6222,
       "recall_hi_amount": 0.804
+    },
+    "mlp": {
+      "cv_auc_mean": 0.9101,
+      "test_auc": 0.9081,
+      "test_pr_auc": 0.6099,
+      "recall_hi_amount": 0.7749
     }
   },
   "top_features": [
     {
       "feature": "posting_month",
-      "importance": 0.920415257595588
+      "importance": 0.9203577255130951
     },
     {
       "feature": "amount_log",
-      "importance": 0.03830240748789475
+      "importance": 0.03834034213411138
     },
     {
       "feature": "days_to_due",
-      "importance": 0.02755975837846594
+      "importance": 0.027563321530433976
     },
     {
       "feature": "term_NAH4",
-      "importance": 0.003989740246977497
+      "importance": 0.00399762957143411
     },
     {
       "feature": "term_OTHER",
-      "importance": 0.0028443329924352384
+      "importance": 0.002865049470790095
     },
     {
       "feature": "term_NAM4",
-      "importance": 0.002796899140121058
+      "importance": 0.002797492873918057
     },
     {
       "feature": "term_NAA8",
-      "importance": 0.0011618483909682444
-    },
-    {
-      "feature": "term_NAC6",
-      "importance": 0.0005138027077694698
+      "importance": 0.0011621454782002043
     },
     {
       "feature": "business_code_U002",
-      "importance": 0.0005115393110094522
+      "importance": 0.0005115422351579847
     },
     {
-      "feature": "invoice_currency_USD",
-      "importance": 0.000379943038045467
+      "feature": "term_NAC6",
+      "importance": 0.000497289434964712
     },
     {
       "feature": "business_code_U001",
-      "importance": 0.00037627534413950614
+      "importance": 0.00038013071538651533
+    },
+    {
+      "feature": "invoice_currency_USD",
+      "importance": 0.00037946339590892063
     },
     {
       "feature": "business_code_U013",
-      "importance": 0.0003426238626671404
+      "importance": 0.00034262935885874773
     }
   ],
   "n_train": 40000,

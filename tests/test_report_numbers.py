@@ -89,3 +89,14 @@ def test_queue_top50_matches_html():
     assert abs(ml["queue_top50_sum"] / 1e6 - 8.0) < 0.1
     assert ml["queue_top50_open"] == 50  # 催收队列全部为当前未结清
     assert "$8.0M" in _html()
+
+
+def test_mlp_ablation_matches_html():
+    # DL 消融：MLP 实测存在、略低于 GBM、且进报告表
+    ml = json.loads((OUT / "ml_result.json").read_text(encoding="utf-8"))
+    assert "mlp" in ml["models"], "MLP ablation missing from ml_result.json"
+    mlp_auc = ml["models"]["mlp"]["test_auc"]
+    gbm_auc = ml["models"]["gbm"]["test_auc"]
+    assert abs(mlp_auc - 0.908) < 0.01, mlp_auc
+    assert mlp_auc < gbm_auc  # 消融结论：5万行够训 DL，但 GBM 仍更优
+    assert "MLP" in _html() and "0.908" in _html()

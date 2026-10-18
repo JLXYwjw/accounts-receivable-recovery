@@ -4,7 +4,11 @@
 切分: 分层随机(train_test_split stratify) —— 目标是"发票最终是否未结清"的快照标签，
       与过账时间强相关,若按时间切分验证集大多未到期结清,会引入泄漏(AUC<0.5)。已修。
 评估: AUC / PR-AUC / 高金额段召回。输出概率 + 催收优先级队列(金额×概率)。
-不用 DL 的原因(诚实): 5万行纯表格, GBM 已足够且可解释; DL 收益有限、不可解释。
+
+DL 消融(诚实实测): 5万张发票足够训练一个 MLP —— 损失=二元交叉熵, 优化器=Adam(初始 lr=1e-3),
+特征经 StandardScaler 标准化(在训练集上拟合防泄漏), L2 正则 alpha=1e-3(等价 dropout 的权重衰减),
+早停(监控验证损失, n_iter_no_change=10)。MLP 作对比消融, 与逻辑回归/随机森林/GBM 同口径评估,
+实测证明"数据够训 DL, 但表格数据上 GBM 仍更优且可解释, 故 DL 不作为主模型"。
 """
 import json
 from pathlib import Path
@@ -12,6 +16,9 @@ import numpy as np, pandas as pd
 from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import roc_auc_score, average_precision_score, recall_score
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "data" / "output"
@@ -47,6 +54,14 @@ models = {
                                             class_weight="balanced", n_jobs=-1, random_state=42),
     "gbm": GradientBoostingClassifier(n_estimators=300, max_depth=4, learning_rate=0.05,
                                       subsample=0.8, random_state=42),
+    # DL 消融：MLP(2 隐层 64→32, ReLU, Adam, 标准化, L2=alpha=1e-3, 早停)。Pipeline 内 StandardScaler
+    # 只在训练集上拟合, 验证/测试不经训练统计 → 无泄漏。
+    "mlp": Pipeline([("scaler", StandardScaler()),
+                     ("mlp", MLPClassifier(hidden_layer_sizes=(64, 32), activation="relu",
+                                           solver="adam", alpha=1e-3, batch_size=256,
+                                           learning_rate_init=1e-3, max_iter=200,
+                                           early_stopping=True, n_iter_no_change=10,
+                                           random_state=42))]),
 }
 res = {}
 for name, mdl in models.items():
