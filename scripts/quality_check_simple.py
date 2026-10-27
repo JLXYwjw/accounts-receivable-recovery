@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """仓库质量门禁 —— 基础可读版（quality_check_simple.py）
 =====================================================
-这个文件做的事，和原版 quality_check.py 完全一样：
+
   1. 英文名的文档（.md / .html）里不能出现任何中文字符
   2. 中文名的文档（文件名带中文 或 带 .zh-CN）里必须有中文
   3. README / index 里引用的 assets/xxx.png 等图片资源必须真实存在
@@ -11,11 +11,32 @@
 "QUALITY FAIL" 和问题清单，退出 1。
 
 区别只是：本文件故意用"最朴素的写法"（for 循环、if 判断、普通函数），
-把原版用正则表达式做的"找中文字"和"找图片引用"改用普通循环实现，
+把正则表达式做的"找中文字"和"找图片引用"改用普通循环实现，
 每一步都写清楚了在做什么、为什么。
 
-运行方式（和原版一样，可不带参数，默认检查当前目录）：
+运行方式（可不带参数，默认检查当前目录）：
     python scripts/quality_check_simple.py [项目根目录]
+
+English:
+Repository quality gate (plain, readable version).
+
+Checks:
+  1. English-named docs (.md / .html) must not contain any Chinese characters
+  2. Chinese-named docs (Chinese in the filename or .zh-CN suffix) must
+     contain Chinese
+  3. Images referenced by README / index (assets/xxx.png etc.) must exist
+  4. The bilingual README.md / README.zh-CN.md / index.html /
+     index.zh-CN.html must all be present
+
+Prints "QUALITY OK" and exits 0 when everything passes; prints
+"QUALITY FAIL" and the problem list, exits 1 otherwise.
+
+The code uses the plainest style on purpose: the regex-based
+Chinese-character and image-reference detection is rewritten with plain
+loops, and every step states what it does and why.
+
+Run (optional root argument, defaults to current directory):
+    python scripts/quality_check_simple.py [project root]
 """
 import subprocess
 import sys
@@ -30,7 +51,7 @@ root = Path(sys.argv[1] if len(sys.argv) > 1 else ".")
 # 双语文件必须四个都在
 REQUIRED = ["README.md", "README.zh-CN.md", "index.html", "index.zh-CN.html"]
 
-# 图片扩展名白名单（和原版正则里的 png/jpg/jpeg/gif/svg 一致）
+# 图片扩展名白名单（png/jpg/jpeg/gif/svg）
 ASSET_EXTS = [".png", ".jpg", ".jpeg", ".gif", ".svg"]
 
 
@@ -44,7 +65,7 @@ def is_cjk(ch):
 
 
 def count_cjk(text):
-    """数一段文本里有多少个中文字符（等价于原版 [\\u4e00-\\u9fff] 正则匹配）。"""
+    """数一段文本里有多少个中文字符（统计中文字符数）。"""
     n = 0
     for ch in text:
         if is_cjk(ch):
@@ -71,9 +92,9 @@ def is_zh_name(filename):
 
 
 def find_asset_refs(text):
-    """找出文本里所有 assets/xxx.png 这类图片引用（等价于原版正则）。
+    """找出文本里所有 assets/xxx.png 这类图片引用（查找图片引用）。
 
-    原版正则：assets/[\\w\\-.]+\\.(?:png|jpg|jpeg|gif|svg)
+    正则：assets/[\\w\\-.]+\\.(?:png|jpg|jpeg|gif|svg)
     也就是：以 "assets/" 开头，后面跟一串字母/数字/下划线/连字符/点，
     最后以 .png / .jpg / .jpeg / .gif / .svg 结尾。
     这里用普通循环逐位置扫描实现。

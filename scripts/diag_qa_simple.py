@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """拷打诊断 —— 基础可读版（diag_qa_simple.py）
 =================================================
-这个文件做的事，和原版 diag_qa.py 完全一样：
+
   1. 读入 ar_clean.parquet，打印过账日期/结清日期的时间范围
   2. 看未结清(isOpen=1)的发票都分布在哪些过账月份
   3. 用最后一次结清日期当"评估时点"，看未结清发票里有多少已经过了到期日
@@ -10,7 +10,26 @@
   6. 算"真逾期应收"= 已到期且未结清 的笔数和金额
 
 它只是个诊断脚本，不写文件，只往屏幕打印。
-运行方式（和原版一样，不带参数）：
+运行方式（不带参数）：
+    python scripts/diag_qa_simple.py
+
+English:
+Stress-test diagnostics (plain, readable version).
+
+Steps:
+  1. Read ar_clean.parquet, print the posting/cleared date range
+  2. See which posting months the open (isOpen = 1) invoices fall into
+  3. Use the last cleared date as the evaluation point and count how many
+     open invoices are already past their due date
+  4. Verify the real semantics of the total_open_amount column (cleared
+     rows also carry a value there)
+  5. Look at the days_to_due distribution of open invoices to judge
+     whether most of them are not due yet
+  6. Compute "true overdue AR" = past due AND open, in count and amount
+
+Diagnostics only: prints to screen, writes nothing.
+
+Run (no arguments):
     python scripts/diag_qa_simple.py
 """
 from pathlib import Path
@@ -68,7 +87,7 @@ def main():
     print("\n=== 真逾期应收(已到期且未结清) ===")
     true_overdue = open_df[open_df["due_passed"]]
     print("数量:", len(true_overdue), "金额:", round(float(true_overdue["total_open_amount"].sum()), 2))
-    # （原版末尾的注释：若按 due passed 重新定义目标，posting_month 还有那么重要吗？）
+    # （末尾的注释：若按 due passed 重新定义目标，posting_month 还有那么重要吗？）
 
 
 if __name__ == "__main__":

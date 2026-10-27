@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """探查原始应收数据 —— 基础可读版（explore_data_simple.py）
 =========================================================
-这个文件做的事，和原版 explore_data.py 完全一样：
+
   1. 读入 data/raw/dataset.csv（真实 SAP 应收账款，约 5 万行）
   2. 打印整体形状、所有列名
   3. 逐列打印：类型 / 缺失百分比 / 唯一值个数 / 前 3 个示例
@@ -11,7 +11,25 @@
   7. 按是否未结清分组，看未结清金额的笔数/合计/平均
 
 它只是个"看完心里有数"的探查脚本，不写任何文件，只往屏幕上打印。
-运行方式（和原版一样，不带参数）：
+运行方式（不带参数）：
+    python scripts/explore_data_simple.py
+
+English:
+Explore the raw AR data (plain, readable version).
+
+Steps:
+  1. Read data/raw/dataset.csv (real SAP AR, ~50k rows)
+  2. Print overall shape and all column names
+  3. Per column: type / missing % / unique count / first 3 examples
+  4. Print value distributions of key fields (open flag, currency,
+     business code, etc.)
+  5. Print min/max/mean/missing rate of numeric columns
+  6. Print raw samples of the date columns
+  7. Group by open flag and show open-amount count / total / average
+
+Exploration only: prints to screen, writes nothing.
+
+Run (no arguments):
     python scripts/explore_data_simple.py
 """
 from pathlib import Path

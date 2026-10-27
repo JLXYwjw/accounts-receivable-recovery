@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """应收 ML —— 基础可读版（ml_analysis_simple.py）
 =================================================
-这个文件做的事，和原版 ml_analysis.py 完全一样：
+
   1. 读入清洗好的 ar_clean.parquet
   2. 做特征工程：把业务代码/币种/付款条款转成字符串，把出现次数最多的
      8 种付款条款保留、其余归成 "OTHER"，再加一个"过账月份"特征
@@ -15,7 +15,30 @@
 区别只是：本文件故意用"最朴素的写法"（for 循环、if 判断、普通函数），
 每一步都写清楚了在做什么、为什么。
 
-运行方式（和原版一样，不带参数）：
+运行方式（不带参数）：
+    python scripts/ml_analysis_simple.py
+
+English:
+AR machine learning (plain, readable version).
+
+Steps:
+  1. Read the cleaned ar_clean.parquet
+  2. Feature engineering: turn business code / currency / payment terms
+     into strings; keep the 8 most frequent payment terms and fold the
+     rest into "OTHER"; add a posting-month feature
+  3. Stratified random split: train (80%) / validation (20%)
+  4. Train 4 models: logistic regression (baseline), random forest,
+     gradient boosting (GBM), MLP (neural-net ablation)
+  5. Evaluate on validation: AUC / PR-AUC / recall on high-amount segment
+  6. Use GBM (main model) to score each validation invoice's
+     "open probability", rank the Top-50 collection-priority list by
+     amount x probability
+  7. Write ml_result.json and ar_val_with_prob.parquet
+
+The code uses the plainest style on purpose; every step states what it
+does and why.
+
+Run (no arguments):
     python scripts/ml_analysis_simple.py
 """
 import json

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """应收关键指标分析 —— 基础可读版（analyze_simple.py）
 =====================================================
-这个文件做的事，和原版 analyze.py 完全一样：
+
   1. 读入清洗好的 ar_clean.parquet
   2. 算整体规模：总行数、发票数、总金额
   3. 算未结清口径：有多少笔未结、占比多少、金额多少
@@ -13,7 +13,26 @@
 区别只是：本文件故意用"最朴素的写法"（for 循环、if 判断、普通函数），
 每一步都写清楚了在做什么、为什么。
 
-运行方式（和原版一样，不带参数）：
+运行方式（不带参数）：
+    python scripts/analyze_simple.py
+
+English:
+Accounts-receivable key-metric analysis (plain, readable version).
+
+Steps:
+  1. Read the cleaned ar_clean.parquet
+  2. Overall size: rows, invoices, total amount
+  3. Open-amount view: how many invoices are open, their share and amount
+  4. "True overdue" AR: past the due date and still open
+  5. Cleared part: settlement age DSO and overdue rate
+  6. Summaries by business code, currency, payment terms, posting month,
+     top customers
+  7. Write metrics.json and print a one-line summary
+
+The code uses the plainest style on purpose (for-loops, if-statements,
+ordinary functions); every step states what it does and why.
+
+Run (no arguments):
     python scripts/analyze_simple.py
 """
 import json
@@ -183,7 +202,7 @@ def main():
     with open(OUT_DIR / "metrics.json", "w", encoding="utf-8") as f:
         json.dump(m, f, ensure_ascii=False, indent=2)
 
-    # 打印一行摘要（和原版打印格式一致）
+    # 打印一行摘要（打印格式一致）
     print(json.dumps({"ok": True, "metrics_keys": list(m.keys()),
                       "open_amount": m["open_amount"], "dso": m["paid_dso_days"]},
                      ensure_ascii=False))

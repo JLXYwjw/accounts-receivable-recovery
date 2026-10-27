@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """应收数据清洗与预处理 —— 基础可读版（clean_data_simple.py）
 =============================================================
-这个文件做的事，和原版 clean_data.py 完全一样：
+
   1. 读入真实 SAP 应收账款原始 CSV（data/raw/dataset.csv，约 5 万行）
   2. 删掉全空的列（原始数据里有一整列 area_business 全是空）
   3. 把几列脏日期解析成真正的日期类型
@@ -12,7 +12,28 @@
 区别只是：本文件故意用"最朴素的写法"（for 循环、if 判断、普通函数），
 每一步都写清楚了在做什么、为什么，方便你从头读懂。
 
-运行方式（和原版一样，不带参数即可）：
+运行方式（不带参数即可）：
+    python scripts/clean_data_simple.py
+
+English:
+AR data cleaning and preprocessing (plain, readable version).
+
+Steps:
+  1. Read the raw SAP accounts-receivable CSV (data/raw/dataset.csv,
+     ~50k rows)
+  2. Drop fully-empty columns (one column, area_business, is all empty)
+  3. Parse dirty date columns into real dates
+  4. Derive useful features: days to due, days to cleared, overdue days,
+     log amount
+  5. Split chronologically into train (first 80%) / validation (last 20%)
+     so models cannot peek at the future
+  6. Check consistency between the isOpen flag and clear_date, then write
+     parquet + a cleaning log
+
+The code uses the plainest style on purpose; every step states what it
+does and why.
+
+Run (no arguments needed):
     python scripts/clean_data_simple.py
 """
 import json
@@ -136,7 +157,7 @@ def main():
     with open(OUT_LOG, "w", encoding="utf-8") as f:
         json.dump(report, f, ensure_ascii=False, indent=2, default=str)
 
-    # 打印清洗统计（和原版打印的内容一致）
+    # 打印清洗统计（打印内容一致）
     print(json.dumps(report, ensure_ascii=False, indent=2, default=str))
     print("WROTE:", OUT_PARQUET)
 
