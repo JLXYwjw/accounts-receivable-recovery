@@ -68,9 +68,9 @@ kaggle datasets download -d mustafakeser4/sap-dataset-bigquery-dataset -p data/r
 
 ```bash
 pip install -r requirements.txt
-python scripts/clean_data.py      # 清洗 + 派生特征 + 分层训练/验证切分
-python scripts/analyze.py         # 关键指标 -> data/output/metrics.json
-python scripts/ml_analysis.py     # 逻辑回归 / RF / GBM、优先队列、特征重要性
+python scripts/clean_data_simple.py      # 清洗 + 派生特征 + 分层训练/验证切分
+python scripts/analyze_simple.py         # 关键指标 -> data/output/metrics.json
+python scripts/ml_analysis_simple.py     # 逻辑回归 / RF / GBM、优先队列、特征重要性
 pytest tests/ -q
 ```
 

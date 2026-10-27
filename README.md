@@ -67,9 +67,9 @@ index.zh-CN.html  # Chinese report, every chart has Insight + Action
 ```bash
 python -m venv .venv && .venv\Scripts\activate
 pip install -r requirements.txt
-python scripts/clean_data.py
-python scripts/analyze.py
-python scripts/ml_analysis.py
+python scripts/clean_data_simple.py
+python scripts/analyze_simple.py
+python scripts/ml_analysis_simple.py
 pytest tests/ -q
 ```
 
