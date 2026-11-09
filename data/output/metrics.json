@@ -221,54 +221,64 @@
   ],
   "top_open_customers": [
     {
+      "cust_number": "0200769623",
       "name_customer": "WAL-MAR systems",
-      "amount": 6287869.58,
-      "n_invoices": 266
+      "amount": 55919525.57,
+      "n_invoices": 2541
     },
     {
-      "name_customer": "WAL-MAR in",
-      "amount": 5749888.6,
-      "n_invoices": 249
+      "cust_number": "0200762301",
+      "name_customer": "C&S WH corp",
+      "amount": 17567544.24,
+      "n_invoices": 386
     },
     {
-      "name_customer": "WAL-MAR associates",
-      "amount": 5717393.68,
-      "n_invoices": 250
+      "cust_number": "0140104409",
+      "name_customer": "LOB associates",
+      "amount": 12863578.82,
+      "n_invoices": 133
     },
     {
-      "name_customer": "WAL-MAR llc",
-      "amount": 5660865.13,
-      "n_invoices": 250
+      "cust_number": "0200707822",
+      "name_customer": "PUBLI corp",
+      "amount": 11236112.22,
+      "n_invoices": 155
     },
     {
-      "name_customer": "WAL-MAR us",
-      "amount": 5430094.7,
-      "n_invoices": 228
+      "cust_number": "0200759878",
+      "name_customer": "SA associates",
+      "amount": 9654993.18,
+      "n_invoices": 320
     },
     {
-      "name_customer": "WAL-MAR co",
-      "amount": 5401544.24,
-      "n_invoices": 262
+      "cust_number": "0200772670",
+      "name_customer": "ASSOCIAT trust",
+      "amount": 7599668.87,
+      "n_invoices": 179
     },
     {
-      "name_customer": "WAL-MAR corp",
-      "amount": 5326825.03,
-      "n_invoices": 254
+      "cust_number": "0200744019",
+      "name_customer": "TARG co",
+      "amount": 7159401.86,
+      "n_invoices": 297
     },
     {
-      "name_customer": "WAL-MAR foundation",
-      "amount": 5259306.65,
+      "cust_number": "0140104440",
+      "name_customer": "SO corp",
+      "amount": 6647727.67,
+      "n_invoices": 74
+    },
+    {
+      "cust_number": "0200794332",
+      "name_customer": "COST corp",
+      "amount": 6111067.45,
       "n_invoices": 241
     },
     {
-      "name_customer": "WAL-MAR corporation",
-      "amount": 5116841.02,
-      "n_invoices": 213
-    },
-    {
-      "name_customer": "WAL-MAR trust",
-      "amount": 4871444.35,
-      "n_invoices": 243
+      "cust_number": "0100031704",
+      "name_customer": "DELHAIZE foundation",
+      "amount": 6021853.08,
+      "n_invoices": 102
     }
   ]
 }

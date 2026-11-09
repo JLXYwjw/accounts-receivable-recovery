@@ -176,10 +176,23 @@ def main():
     m["monthly"] = monthly
 
     # ---- 2.10 未结清金额最大的 Top10 客户 ----
+    # 按客户编号 cust_number 聚合，不按客户名 name_customer。
+    # 原因：1,425 个编号对应 4,197 种写法，同一客户最多 11 种名字；
+    #       按名字聚合会把同一个客户拆成多个"大客户"，Top10 直接失真。
+    # Group the Top-10 open customers by cust_number, NOT name_customer:
+    # 1,425 customer numbers map to 4,197 name spellings, so grouping by
+    # name would split one customer into several fake "top" entries.
     cust_rows = []
-    for name, g in sub.groupby("name_customer"):
+    for cnum, g in sub.groupby("cust_number"):
+        # 展示用名：取该编号下出现次数最多的那种写法
+        name_counts = g["name_customer"].value_counts()
+        if len(name_counts) > 0:
+            display_name = name_counts.index[0]
+        else:
+            display_name = str(cnum)
         cust_rows.append({
-            "name_customer": name,
+            "cust_number": str(cnum),
+            "name_customer": display_name,
             "amount": float(g["total_open_amount"].sum()),
             "n_invoices": int(len(g)),
         })
@@ -192,6 +205,7 @@ def main():
     top_customers = []
     for r in cust_rows[:10]:
         top_customers.append({
+            "cust_number": r["cust_number"],
             "name_customer": r["name_customer"],
             "amount": round(r["amount"], 2),
             "n_invoices": r["n_invoices"],
